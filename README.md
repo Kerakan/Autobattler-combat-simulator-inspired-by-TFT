@@ -1,2 +1,6 @@
-# C-Autobattler-simulator-inspired-by-TFT
+# Autobattler-combat-simulator-inspired-by-TFT
 A TFT-inspired autobattler combat simulator built in C++ with Raylib.
+
+This project features a hex grid system, combat optimized with spatial hashing, specific abilities for each champion, custom data architecture, per-star stats and a trait sinergy system. It is built as a portfolio project aiming towards AAA game studio roles.
+
+Current Status: Development of custom architecture: champion pool definitions in progress, trait enumeration complete, stats system complete.
