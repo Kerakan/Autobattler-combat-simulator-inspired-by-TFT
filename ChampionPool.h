@@ -1,4 +1,5 @@
 #include "Champ.h"
+#include <unordered_map>
 //Shadow Fighters
 ChampDef Akira{
     .name = "Akira",
@@ -163,7 +164,7 @@ ChampDef Vesper{
     .name = "Vesper",
     .cost = 1,
     .range = 1,
-    .mana_max = 50, // Shields herself for 200 health
+    .mana_max = 50, // Shields herself for 15% health
     .hp = {650, 1300, 1800},
     .armor = {30, 60, 100},
     .magicres = {30, 60, 100},
@@ -225,3 +226,26 @@ ChampDef Solarix{
     .attackspeed = {0.6, 0.75, 1.00},
     .ChampTraits = {Trait::Star_Forger, Trait::Mage}
 };
+//I have to change Champ.h in order for it to work well(use pointer instead of reference)
+const std::unordered_map<std::string, const ChampDef&> CHAMP_POOL = {
+    {"Akira",     &Akira},
+    {"Totom",     &Totom},
+    {"Asura",     &Asura},
+    {"Dante",     &Dante},
+    {"Takeshi",   &Takeshi},
+    {"Draco",     &Draco},
+    {"Lyra",      &Lyra},
+    {"Orion",     &Orion},
+    {"Andromeda", &Andromeda},
+    {"Delphinus", &Delphinus},
+    {"Hades",     &Hades},
+    {"Thanatos",  &Thanatos},
+    {"Vesper",    &Vesper},
+    {"Cassian",   &Cassian},
+    {"Sable",     &Sable},
+    {"Goliath",   &Goliath},
+    {"Solarix",   &Solarix}
+};
+ChampState CreateChampion(std::string name, int star){
+    return ChampState(CHAMP_POOL.at(name),star);
+}
