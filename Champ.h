@@ -1,8 +1,9 @@
+#pragma once
 #include <iostream>
 #include <array>
 #include <vector>
 #include <string>
-enum class Trait {Guardian, Mage, Sniper, Bruiser, Assassin, Shadow_Fighters, Dark_Knights, Celestials, Lovers, Star_Forger};
+enum class Trait {Guardian, Mage, Sniper, Bruiser, Assassin, Shadow_Fighters, Dark_Knights, Celestials, Lovers, Star_Forger, Titan};
 struct ChampDef{
     std::string name;
     int cost;
@@ -27,7 +28,9 @@ struct ChampState{
     float ad_current;
     float ap_current;
     float attackspeed_current;
-    ChampState(const ChampDef& d, int s): def(d), star(s)
+    float current_shield = 0;
+    float lifesteal = 0;
+    ChampState(const ChampDef& const d, int s): def(d), star(s)
         {
             range = def.range;
             hp_current = def.hp[star];
