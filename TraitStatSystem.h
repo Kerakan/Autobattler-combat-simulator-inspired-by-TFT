@@ -1,4 +1,6 @@
+#pragma once
 #include "Champ.h"
+#include <ctime>
 struct TraitActivation{
     std::vector<int> treshold;
     int numchamps;
@@ -7,7 +9,6 @@ struct TraitActivation{
     std::vector<float> ap_modifier;
     float lifesteal;
 };
-
 TraitActivation Bruiser{
     .treshold = {2,3},
     .numchamps = 0,
@@ -17,7 +18,8 @@ TraitActivation Bruiser{
     .lifesteal = 0.0
 };
 TraitActivation Assassin{
-    .treshold = {2},
+    //define it as 2 tresholds so as to have it fulfill the conditions on the void function ApplyTraitEffect
+    .treshold = {2,2},
     .numchamps = 0,
     .hp_modifier = {1.0, 1.0},
     .ad_modifier = {1.0, 1.0},
@@ -48,8 +50,14 @@ TraitActivation Mage{
     .ap_modifier = {1.15, 1.25},
     .lifesteal = 0.0
 };
-TraitActivation Celestials{
-    .treshold = {2,3,4,5},
-    .numchamps = 0,
-    //Have to make some changes later on the afternoon to make this trait work how I intend it to.
+void ApplyTraitEffects(TraitActivation& trait, ChampState& Champion){
+    if (trait.numchamps >= trait.treshold[1]){
+        
+    }
+    if (trait.numchamps >= trait.treshold[0]){
+
+    }
+};
+//Imoportant Traits will activate separetely
+void ApplyCelestialsTraitEffects(){
 };
