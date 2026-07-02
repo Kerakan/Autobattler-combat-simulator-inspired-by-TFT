@@ -11,6 +11,16 @@ struct TraitActivation{
     std::vector<float> ad_modifier;
     std::vector<float> ap_modifier;
     float lifesteal;
+    bool is_active = false;
+};
+TraitActivation Lovers{
+    .name = "Lovers",
+    .treshold = {2,2},
+    .numchamps = 0,
+    .hp_modifier = {1.0, 1.0},
+    .ad_modifier = {1.0, 1.0},
+    .ap_modifier = {1.0, 1.0},
+    .lifesteal = 0.0,
 };
 TraitActivation Bruiser{
     .name = "Bruiser",
@@ -87,12 +97,31 @@ TraitActivation Dark_Knights{
     .ap_modifier = {1.0, 1.0, 1.0},
     .lifesteal = 0.0
 };
+TraitActivation Titan{
+    .name = "Titan",
+    .treshold = {1,1},
+    .numchamps = 0,
+    .hp_modifier = {1.0, 1.0},
+    .ad_modifier = {1.0, 1.0},
+    .ap_modifier = {1.0, 1.0},
+    .lifesteal = 0.0
+};
+TraitActivation Star_Forger{
+    .name = "Star_Forger",
+    .treshold = {1,1},
+    .numchamps = 0,
+    .hp_modifier = {1.0, 1.0},
+    .ad_modifier = {1.0, 1.0},
+    .ap_modifier = {1.0, 1.0},
+    .lifesteal = 0.0
+};
 void ApplyTraitEffects(TraitActivation& trait, ChampState& Champion){
     if (trait.numchamps >= trait.treshold[1]){
         Champion.ad_current = Champion.def.ad[Champion.star] * trait.ad_modifier[1];
         Champion.ap_current = Champion.def.ap[Champion.star] * trait.ap_modifier[1];
         Champion.hp_current = Champion.def.hp[Champion.star] * trait.hp_modifier[1];
         Champion.lifesteal = trait.lifesteal;
+        trait.is_active = true;
         std::cout<< "Applied trait " + trait.name +" with treshold " + std::to_string(trait.treshold[1])<<std::endl;
     }
     else if (trait.numchamps >= trait.treshold[0]){
@@ -100,6 +129,7 @@ void ApplyTraitEffects(TraitActivation& trait, ChampState& Champion){
         Champion.ap_current = Champion.def.ap[Champion.star] * trait.ap_modifier[0];
         Champion.hp_current = Champion.def.hp[Champion.star] * trait.hp_modifier[0];
         Champion.lifesteal = trait.lifesteal;
+        trait.is_active = true;
         std::cout<< "Applied trait " + trait.name +" with treshold " + std::to_string(trait.treshold[0])<<std::endl;
     }
     else{
@@ -118,14 +148,17 @@ void ApplyCelestialsTraitEffects(ChampState& Champion){
 };
 void ApplyShadowFighterTraitEffects(ChampState& Champion, int seconds){
     int n = seconds;
-    Shadow_Fighters.ad_modifier = {1.0f + 0.04f*n};
-    Shadow_Fighters.ap_modifier = {1.0f + 0.04f*n};
-    Shadow_Fighters.hp_modifier = {1.0f + 0.04f*n};
+    Shadow_Fighters.ad_modifier = {1.0f + 0.01f*n};
+    Shadow_Fighters.ap_modifier = {1.0f + 0.01f*n};
+    Shadow_Fighters.hp_modifier = {1.0f + 0.01f*n};
     Champion.ad_current = Champion.def.ad[Champion.star] * Shadow_Fighters.ad_modifier[0];
     Champion.ap_current = Champion.def.ap[Champion.star] * Shadow_Fighters.ap_modifier[0];
     Champion.hp_current = Champion.def.hp[Champion.star] * Shadow_Fighters.hp_modifier[0];
 }
 const std::unordered_map<Trait, TraitActivation*> TRAIT_POOL = {
+    {Trait::Titan,           &Titan},
+    {Trait::Star_Forger,     &Star_Forger},
+    {Trait::Lovers,          &Lovers},
     {Trait::Bruiser,         &Bruiser},
     {Trait::Assassin,        &Assassin},
     {Trait::Sniper,          &Sniper},
