@@ -19,6 +19,13 @@ std::vector<ChampState> CreateTeam(){
         std::cout<<"Input the name of the desired champion"<<std::endl;
         std::cin>>champname;
         ChampState Champion = CreateChampion(champname,0);
+        int q;
+        int r;
+        std::cout<<"Input the q coordinate of the desired champion"<<std::endl;
+        std::cin>>q;
+        std::cout<<"Input the r coordinate of the desired champion"<<std::endl;
+        std::cin>>r;
+        Champion.pos = GridPos(q,r);
         team.push_back(Champion);
         n += 1;
     };
