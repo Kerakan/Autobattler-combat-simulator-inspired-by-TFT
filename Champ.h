@@ -3,6 +3,7 @@
 #include <array>
 #include <vector>
 #include <string>
+#include "Grid.h"
 enum class Trait {Guardian, Mage, Sniper, Bruiser, Assassin, Shadow_Fighters, Dark_Knights, Celestials, Lovers, Star_Forger, Titan};
 struct ChampDef{
     std::string name;
@@ -19,6 +20,8 @@ struct ChampDef{
 };
 struct ChampState{
     const ChampDef& def;
+    GridPos pos = GridPos(0,0);
+    ChampState* enemytarget=nullptr;
     int star;
     int range;
     float hp_current;
@@ -30,7 +33,7 @@ struct ChampState{
     float attackspeed_current;
     float current_shield = 0;
     float lifesteal = 0;
-    ChampState(const ChampDef& const d, int s): def(d), star(s)
+    ChampState(const ChampDef& d, int s): def(d), star(s)
         {
             range = def.range;
             hp_current = def.hp[star];
@@ -41,4 +44,7 @@ struct ChampState{
             ap_current = def.ap[star];
             attackspeed_current = def.attackspeed[star];
         }
+    ChampState operator=(const ChampState& other){
+        return ChampState(other.def, other.star);
+    }
 };
