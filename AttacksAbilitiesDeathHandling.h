@@ -20,6 +20,11 @@ void autoattack(ChampState &champ){
         }
     }
     champ.enemytarget->hp_current -= damage;
+    if (champ.lifesteal > 0){
+        float lifesteal_amount = (champ.lifesteal/100)*damage;
+        champ.hp_current += lifesteal_amount;
+        std::cout<<"Champion "<<champ.def.name<<" lifesteals "<<lifesteal_amount<<std::endl;
+    }
     champ.mana_current += 5;
 }
 void RemoveDead(std::vector<ChampState> &team){
@@ -82,7 +87,7 @@ void asura_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::ve
     //Yet to be programmed
 }
 void dante_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::vector<ChampState>& EnemyTeam){
-    float damage = champ.ap_current*(100/(35+champ.enemytarget->magicres_current));
+    float damage = champ.ap_current*(100/(50+champ.enemytarget->magicres_current));
     champ.enemytarget->hp_current -= damage;
     if (champ.enemytarget->current_shield >0){
         if (champ.enemytarget->current_shield >= damage){
@@ -150,28 +155,62 @@ void delphinus_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std
     for (ChampState& ally: AllyTeam){
         float missing_health = ally.def.hp[ally.star]-ally.hp_current;
         ally.hp_current += 0.3f*missing_health;
+        std::cout<<"Champion "<<champ.def.name<<" uses ability on "<<ally.def.name<<" healing "<<0.3f*missing_health<<std::endl;
     }
 }
 void hades_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::vector<ChampState>& EnemyTeam){
     //Yet to be programmed
 }
 void thanatos_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::vector<ChampState>& EnemyTeam){
-
+    if (champ.star==0){
+        champ.ad_current += 15;
+    }
+    else if (champ.star==1){
+        champ.ad_current += 25;
+    }
+    else if (champ.star==2){
+        champ.ad_current += 40;
+    }
+    float extra_ad = champ.ad_current-champ.def.ad[champ.star];
+    std::cout<<"Champion "<<champ.def.name<<" uses ability"<<"getting "<<extra_ad<<" more ad"<<std::endl;
+    autoattack(champ);
+    champ.ad_current -= extra_ad;
 }
 void vesper_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::vector<ChampState>& EnemyTeam){
-
+    champ.current_shield += 0.15f*champ.def.hp[champ.star];
+    std::cout<<"Champion "<<champ.def.name<<" uses ability gaining a shield of "<<champ.current_shield<<std::endl;
 }
 void cassian_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::vector<ChampState>& EnemyTeam){
-
+    champ.hp_current += 0.2f*(champ.def.hp[champ.star]-champ.hp_current);
+    champ.current_shield += 0.1f*champ.def.hp[champ.star];
+    std::cout<<"Champion "<<champ.def.name<<" uses ability healing "<<0.2f*(champ.def.hp[champ.star]-champ.hp_current)<<" and gaining a shield of "<<0.1f*champ.def.hp[champ.star]<<std::endl;
 }
 void sable_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::vector<ChampState>& EnemyTeam){
+    champ.lifesteal += 20;
+    std::cout<<"Champion "<<champ.def.name<<" uses ability gaining 20% lifesteal for the next autoattack"<<std::endl;
+    autoattack(champ);
+    champ.lifesteal -= 20;
 
 }
 void goliath_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::vector<ChampState>& EnemyTeam){
-
+    //Yet to be programmed
 }
 void solarix_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::vector<ChampState>& EnemyTeam){
-
+    for (ChampState& enemy: EnemyTeam){
+        float damage = champ.ap_current*(100/(50+enemy.magicres_current));
+        if (enemy.current_shield >0){
+            if (enemy.current_shield >= damage){
+                enemy.current_shield -= damage;
+                damage = 0;
+            }
+            else{
+                enemy.current_shield = 0;
+                damage -= enemy.current_shield;
+            }
+        }
+        enemy.hp_current -= damage;
+        std::cout<<"Champion "<<champ.def.name<<" uses ability on "<<enemy.def.name<<" dealing "<<damage<< " damage"<<std::endl;
+    }
 }
 const std::unordered_map<std::string, AbilityFunction> ABILITY_MAP = {
     {"Akira",     akira_ability},
