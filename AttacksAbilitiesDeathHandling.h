@@ -79,31 +79,81 @@ void totom_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::ve
     std::cout<<"Champion "<<champ.def.name<<" uses ability gaining a shield of "<<champ.current_shield<<std::endl;
 }
 void asura_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::vector<ChampState>& EnemyTeam){
-
+    //Yet to be programmed
 }
 void dante_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::vector<ChampState>& EnemyTeam){
-
+    float damage = champ.ap_current*(100/(35+champ.enemytarget->magicres_current));
+    champ.enemytarget->hp_current -= damage;
+    if (champ.enemytarget->current_shield >0){
+        if (champ.enemytarget->current_shield >= damage){
+            champ.enemytarget->current_shield -= damage;
+            damage = 0;
+        }
+        else{
+            champ.enemytarget->current_shield = 0;
+            damage -= champ.enemytarget->current_shield;
+        }
+    }
+    champ.enemytarget->hp_current -= damage;
+    std::cout<<"Champion "<<champ.def.name<<" uses ability on "<<champ.enemytarget->def.name<<" dealing "<<damage<< " damage"<<std::endl;
 }
 void takeshi_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::vector<ChampState>& EnemyTeam){
-
+    if (champ.star==0){
+        champ.ad_current += 10;
+    }
+    else if (champ.star==1){
+        champ.ad_current += 15;
+    }
+    else if (champ.star==2){
+        champ.ad_current += 25;
+    }
+    float extra_ad = champ.ad_current-champ.def.ad[champ.star];
+    std::cout<<"Champion "<<champ.def.name<<" uses ability getting "<<extra_ad<<" more ad"<<std::endl;
+    autoattack(champ);
+    champ.ad_current -= extra_ad;
 }
 void draco_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::vector<ChampState>& EnemyTeam){
-
+    for (ChampState& ally: AllyTeam){
+        if (distance(champ.pos, ally.pos) <=1){
+            ally.current_shield += 0.3f*champ.def.hp[champ.star];
+            ally.hp_current += 0.1f*champ.hp_current;
+            std::cout<<"Champion "<<champ.def.name<<" uses ability on "<<ally.def.name<<"gaining a shield of "<<ally.current_shield<<" and healing "<<0.1f*champ.hp_current<<std::endl;
+        }
+    }
 }
 void lyra_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::vector<ChampState>& EnemyTeam){
-
+    //Yet to be programmed
 }
 void orion_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::vector<ChampState>& EnemyTeam){
-
+    if (champ.star==0){
+        champ.ad_current += 15;
+    }
+    else if (champ.star==1){
+        champ.ad_current += 25;
+    }
+    else if (champ.star==2){
+        champ.ad_current += 40;
+    }
+    float extra_ad = champ.ad_current-champ.def.ad[champ.star];
+    std::cout<<"Champion "<<champ.def.name<<" uses ability"<<"getting "<<extra_ad<<" more ad"<<std::endl;
+    autoattack(champ);
+    champ.ad_current -= extra_ad;
 }
 void andromeda_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::vector<ChampState>& EnemyTeam){
-
+    float x = champ.ad_current;
+    champ.ad_current *= 1.25f;
+    std::cout<<"Champion "<<champ.def.name<<" uses ability"<<"getting "<<0.25f*champ.ad_current<<" more ad"<<std::endl;
+    autoattack(champ);
+    champ.ad_current = x;
 }
 void delphinus_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::vector<ChampState>& EnemyTeam){
-
+    for (ChampState& ally: AllyTeam){
+        float missing_health = ally.def.hp[ally.star]-ally.hp_current;
+        ally.hp_current += 0.3f*missing_health;
+    }
 }
 void hades_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::vector<ChampState>& EnemyTeam){
-
+    //Yet to be programmed
 }
 void thanatos_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::vector<ChampState>& EnemyTeam){
 
