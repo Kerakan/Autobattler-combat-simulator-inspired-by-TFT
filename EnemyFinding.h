@@ -36,4 +36,14 @@ void FindClosestEnemy(ChampState &Champ, std::vector<ChampState> &EnemyTeam){
             Champ.enemytarget = &Enemy;
         }
     }
+    if (closest_distance<=Champ.range){
+        std::cout<<"Champion "<<Champ.def.name<<" found enemy "<< Champ.enemytarget->def.name<<std::endl;
+    }
+    else{
+        while(closest_distance>Champ.range){
+            std::cout<<"Champion "<<Champ.def.name<<" is moving closer to enemy "<< Champ.enemytarget->def.name<<std::endl;
+            MoveCloser(Champ, *Champ.enemytarget);
+        }
+        std::cout<<"Champion "<<Champ.def.name<<" found enemy "<< Champ.enemytarget->def.name<<std::endl;
+    }   
 }
