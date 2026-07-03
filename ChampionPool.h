@@ -1,3 +1,4 @@
+#pragma once
 #include "Champ.h"
 #include <unordered_map>
 //Shadow Fighters
@@ -18,7 +19,7 @@ ChampDef Totom{
     .name = "Totom",
     .cost = 3,
     .range = 1,
-    .mana_max = 0, // No mana, he just autoattacks so as a bruiser he gets more life and more ad. Every third attack he gets a shield for 10% of his remaining health.
+    .mana_max = 15, // No mana, he just autoattacks so as a bruiser he gets more life and more ad. Every third attack he gets a shield for 10% of his remaining health.
     .hp = {1050, 2000, 3200},
     .armor = {40, 80, 140},
     .magicres = {40, 80, 140},
@@ -57,7 +58,7 @@ ChampDef Takeshi{
     .name = "Takeshi",
     .cost = 1,
     .range = 1,
-    .mana_max = 50, //Empowers its next attack dealing 10/15/25 more ad.
+    .mana_max = 50, //Empowers and uses an attack dealing 10/15/25 more ad.
     .hp = {600, 1100, 1600},
     .armor = {20, 40, 75},
     .magicres = {20, 40, 75},
@@ -111,7 +112,7 @@ ChampDef Andromeda{
     .name = "Andromeda",
     .cost = 2,
     .range = 1,
-    .mana_max = 50, // She will empower her next attack dealing 25% more damage.
+    .mana_max = 50, // Uses an empowered attack dealing 25% more damage.
     .hp = {650, 1250, 1900},
     .armor = {30, 60, 100},
     .magicres = {30, 60, 100},
@@ -151,7 +152,7 @@ ChampDef Thanatos{
     .name = "Thanatos",
     .cost = 2,
     .range = 2,
-    .mana_max = 40, // Does higher damage on the next attack
+    .mana_max = 40, // Does a higher damage attack
     .hp = {450, 800, 1500},
     .armor = {20, 40, 75},
     .magicres = {20, 40, 75},
@@ -164,7 +165,7 @@ ChampDef Vesper{
     .name = "Vesper",
     .cost = 1,
     .range = 1,
-    .mana_max = 50, // Shields herself for 15% health
+    .mana_max = 50, // Shields herself for 15% max health
     .hp = {650, 1300, 1800},
     .armor = {30, 60, 100},
     .magicres = {30, 60, 100},
