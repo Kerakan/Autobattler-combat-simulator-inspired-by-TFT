@@ -4,8 +4,8 @@
 #include "Team.h"
 #include "Combat.h"
 int main(){
-	std::vector<ChampState> Team1 = CreateTeam();
-	std::vector<ChampState> Team2 = CreateTeam();
-	run_combat(Team1, Team2);
+	std::vector<ChampState> TeamA = CreateTeam();
+	std::vector<ChampState> TeamB = CreateTeam();
+	run_combat(TeamA, TeamB);
 	return 0;
 }
