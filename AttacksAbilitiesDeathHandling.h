@@ -1,3 +1,4 @@
+#pragma once
 #include "Champ.h"
 #include "EnemyFinding.h"
 #include <functional>
@@ -27,17 +28,19 @@ void autoattack(ChampState &champ){
     }
     champ.mana_current += 5;
 }
-void RemoveDead(std::vector<ChampState> &team){
+std::vector<ChampState> RemoveDead(std::vector<ChampState> &team){
     std::vector<ChampState> aux = {};
     for (ChampState& champ: team){
-        if (champ.hp_current > 0){
+        std::cout<<"Champion "<<champ.def.name<<" has "<<champ.hp_current<<" hp"<<std::endl;
+        if (champ.hp_current > -0.001f){
+            std::cout<<"Champion "<<champ.def.name<<" is alive with "<<champ.hp_current<<" hp"<<std::endl;
             aux.push_back(champ);
         }
-        if (champ.hp_current <= 0){
+        else if (champ.hp_current <= 0){
             std::cout<<"Removing dead champion: "<< champ.def.name<<std::endl;
         }
     }
-        team=aux;
+        return aux;
 }
 using AbilityFunction = std::function<void(ChampState&, std::vector<ChampState>&, std::vector<ChampState>&)>;
 void akira_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::vector<ChampState>& EnemyTeam){
@@ -122,7 +125,7 @@ void draco_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::ve
         if (distance(champ.pos, ally.pos) <=1){
             ally.current_shield += 0.3f*champ.def.hp[champ.star];
             ally.hp_current += 0.1f*champ.hp_current;
-            std::cout<<"Champion "<<champ.def.name<<" uses ability on "<<ally.def.name<<"gaining a shield of "<<ally.current_shield<<" and healing "<<0.1f*champ.hp_current<<std::endl;
+            std::cout<<"Champion "<<champ.def.name<<" uses ability on "<<ally.def.name<<" gaining a shield of "<<ally.current_shield<<" and healing "<<0.1f*champ.hp_current<<std::endl;
         }
     }
 }
