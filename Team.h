@@ -13,6 +13,7 @@ int askteamcapacity(){
 std::vector<ChampState> CreateTeam(){
     std::vector<ChampState> team;
     int x = askteamcapacity();
+    team.reserve(x);
     int n = 0;
     while (n < x){
         std::string champname;
