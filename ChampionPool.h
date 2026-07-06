@@ -32,7 +32,7 @@ ChampDef Asura{
     .name = "Asura",
     .cost = 1,
     .range = 3,
-    .mana_max = 0, // She will automatically target the the enemy with lowest hp dealing 10% more dmg to them.
+    .mana_max = 0, // She will automatically target the the enemy with lowest max hp.
     .hp = {450, 800, 1300},
     .armor = {15, 30, 60},
     .magicres = {15, 30, 60},
@@ -124,7 +124,7 @@ ChampDef Andromeda{
 ChampDef Delphinus{
     .name = "Delphinus",
     .cost = 1,
-    .range = 1,
+    .range = 3,
     .mana_max = 80, //High mana cost but will heal all allies for 30% of their remaining hp.
     .hp = {450, 700, 1100},
     .armor = {15, 30, 60},

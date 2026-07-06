@@ -17,9 +17,12 @@ std::vector<ChampState> CreateTeam(){
     int n = 0;
     while (n < x){
         std::string champname;
+        int star;
         std::cout<<"Input the name of the desired champion"<<std::endl;
         std::cin>>champname;
-        ChampState Champion = CreateChampion(champname,0);
+        std::cout<<"Input the star level of the desired champion (0, 1 or 2)"<<std::endl;
+        std::cin>>star;
+        ChampState Champion = CreateChampion(champname,star);
         int q;
         int r;
         std::cout<<"Input the q coordinate of the desired champion"<<std::endl;

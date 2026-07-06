@@ -3,36 +3,46 @@
 #include "EnemyFinding.h"
 #include <functional>
 #include "Grid.h"
-void autoattack(ChampState &champ){
+#include <cmath>
+void managedamage(ChampState& champ1,ChampState& champ2, float dmg){
+    if (champ2.current_shield >0){
+        if (champ2.current_shield >= dmg){
+            champ2.current_shield -= dmg;
+            dmg = 0;
+        }
+        else{
+            dmg -= champ2.current_shield;
+            champ2.current_shield = 0;
+        }
+    }
+    champ2.hp_current -= dmg;
+    if (champ1.lifesteal > 0){
+        float lifesteal_amount = (champ1.lifesteal/100)*dmg;
+        champ1.hp_current += lifesteal_amount;
+        std::cout<<"Champion "<<champ1.def.name<<" lifesteals "<<lifesteal_amount<<std::endl;
+    }
+    if (champ1.execute >0){
+        if(champ2.hp_current<= champ2.hp_max*(champ1.execute/100)){
+            champ2.hp_current = 0;
+            std::cout<<"Champion "<<champ1.def.name<<" executes "<<champ2.def.name<<std::endl;
+        }
+    }
+}
+void autoattack(ChampState& champ){
     if (champ.enemytarget == nullptr){
         std::cout<<"No enemy target found for "<<champ.def.name<<std::endl;
         return;
     }
     float damage = champ.ad_current*(100/(100+champ.enemytarget->armor_current));
     std::cout<<"Champion "<<champ.def.name<<" attacks with AD: "<<champ.ad_current<< " to "<<champ.enemytarget->def.name<<" dealing "<<damage<<std::endl;
-    if (champ.enemytarget->current_shield >0){
-        if (champ.enemytarget->current_shield >= damage){
-            champ.enemytarget->current_shield -= damage;
-            damage = 0;
-        }
-        else{
-            champ.enemytarget->current_shield = 0;
-            damage -= champ.enemytarget->current_shield;
-        }
-    }
-    champ.enemytarget->hp_current -= damage;
-    if (champ.lifesteal > 0){
-        float lifesteal_amount = (champ.lifesteal/100)*damage;
-        champ.hp_current += lifesteal_amount;
-        std::cout<<"Champion "<<champ.def.name<<" lifesteals "<<lifesteal_amount<<std::endl;
-    }
+    managedamage(champ, *champ.enemytarget, damage);
     champ.mana_current += 5;
 }
 std::vector<ChampState> RemoveDead(std::vector<ChampState> &team){
     std::vector<ChampState> aux = {};
     for (ChampState& champ: team){
         std::cout<<"Champion "<<champ.def.name<<" has "<<champ.hp_current<<" hp"<<std::endl;
-        if (champ.hp_current > -0.001f){
+        if (champ.hp_current > 0){
             std::cout<<"Champion "<<champ.def.name<<" is alive with "<<champ.hp_current<<" hp"<<std::endl;
             aux.push_back(champ);
         }
@@ -68,17 +78,7 @@ void akira_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::ve
     //attacks now
     for (ChampState& target: targets){
         float damage = champ.ap_current*(100/(50+target.magicres_current));
-        if (target.current_shield >0){
-            if (target.current_shield >= damage){
-                target.current_shield -= damage;
-                damage = 0;
-            }
-            else{
-                target.current_shield = 0;
-                damage -= target.current_shield;
-            }
-        }
-        target.hp_current -= damage;
+        managedamage(champ, target, damage);
         std::cout<<"Champion "<<champ.def.name<<" uses ability on "<<target.def.name<<" dealing "<<damage<< " damage"<<std::endl;
     }
 }
@@ -91,18 +91,7 @@ void asura_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::ve
 }
 void dante_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::vector<ChampState>& EnemyTeam){
     float damage = champ.ap_current*(100/(50+champ.enemytarget->magicres_current));
-    champ.enemytarget->hp_current -= damage;
-    if (champ.enemytarget->current_shield >0){
-        if (champ.enemytarget->current_shield >= damage){
-            champ.enemytarget->current_shield -= damage;
-            damage = 0;
-        }
-        else{
-            champ.enemytarget->current_shield = 0;
-            damage -= champ.enemytarget->current_shield;
-        }
-    }
-    champ.enemytarget->hp_current -= damage;
+    managedamage(champ, *champ.enemytarget, damage);
     std::cout<<"Champion "<<champ.def.name<<" uses ability on "<<champ.enemytarget->def.name<<" dealing "<<damage<< " damage"<<std::endl;
 }
 void takeshi_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::vector<ChampState>& EnemyTeam){
@@ -130,7 +119,23 @@ void draco_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::ve
     }
 }
 void lyra_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::vector<ChampState>& EnemyTeam){
-    //Yet to be programmed
+    //Calculate the Hexes in trajectory
+    std::cout<<"Champion "<<champ.def.name<<" uses ability"<<std::endl;
+    std::vector<GridPos> Hexes = Trajectory(champ.pos,champ.enemytarget->pos);
+    int targetshit = 0;
+    for (GridPos& Hex: Hexes){
+        if (champ.pos == Hex) continue;
+        for (ChampState& enemy: EnemyTeam){
+            if(Hex == enemy.pos){
+                float damage = champ.ad_current*(100/(100+enemy.armor_current))*(1+(1.0f/(2+targetshit)));
+                std::cout<<"Champion "<<champ.def.name<<" deals "<<damage<<" damage to "<<enemy.def.name<<std::endl;
+                managedamage(champ, enemy, damage);
+                targetshit ++;
+                break;
+            }
+        }
+    }
+    std::cout<<targetshit<< " enemies hit"<<std::endl;
 }
 void orion_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::vector<ChampState>& EnemyTeam){
     if (champ.star==0){
@@ -162,7 +167,22 @@ void delphinus_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std
     }
 }
 void hades_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::vector<ChampState>& EnemyTeam){
-    //Yet to be programmed
+    std::cout<<"Champion "<<champ.def.name<<" uses ability"<<std::endl;
+    std::vector<GridPos> Hexes = Trajectory(champ.pos,champ.enemytarget->pos);
+    int targetshit = 0;
+    for (GridPos& Hex: Hexes){
+        if (champ.pos == Hex) continue;
+        for (ChampState& enemy: EnemyTeam){
+            if(Hex == enemy.pos){
+                float damage = champ.ap_current*(100/(50+enemy.magicres_current))*(1+(1.0f/(2+targetshit)));
+                std::cout<<"Champion "<<champ.def.name<<" deals "<<damage<<" damage to "<<enemy.def.name<<std::endl;
+                managedamage(champ, enemy, damage);
+                targetshit ++;
+                break;
+            }
+        }
+    }
+    std::cout<<targetshit<< " enemies hit"<<std::endl;
 }
 void thanatos_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::vector<ChampState>& EnemyTeam){
     if (champ.star==0){
@@ -201,17 +221,7 @@ void goliath_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::
 void solarix_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::vector<ChampState>& EnemyTeam){
     for (ChampState& enemy: EnemyTeam){
         float damage = champ.ap_current*(100/(50+enemy.magicres_current));
-        if (enemy.current_shield >0){
-            if (enemy.current_shield >= damage){
-                enemy.current_shield -= damage;
-                damage = 0;
-            }
-            else{
-                enemy.current_shield = 0;
-                damage -= enemy.current_shield;
-            }
-        }
-        enemy.hp_current -= damage;
+        managedamage(champ, enemy, damage);
         std::cout<<"Champion "<<champ.def.name<<" uses ability on "<<enemy.def.name<<" dealing "<<damage<< " damage"<<std::endl;
     }
 }
