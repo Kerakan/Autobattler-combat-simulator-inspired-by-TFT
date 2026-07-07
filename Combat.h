@@ -10,6 +10,8 @@ void run_combat(std::vector<ChampState>& Team1, std::vector<ChampState>& Team2) 
     auto combat_start = std::chrono::steady_clock::now();
     float Shadow_Fighters_last = 0.0f;
     float Shadow_Fighters_interval=1.0f;
+    int sf_count_t1 = 0;
+    int sf_count_t2 = 0;
     //sum how many of each trait there is
     for (ChampState& champion: Team1){
         for(Trait trait: champion.def.ChampTraits){
@@ -23,6 +25,7 @@ void run_combat(std::vector<ChampState>& Team1, std::vector<ChampState>& Team2) 
             TraitActivation* t = TRAIT_POOL.at(trait);
             if (t->name != "Celestials" and t->name != "ShadowFighters") ApplyTraitEffects(*t,champion);
             else if(t->name == "Celestials") ApplyCelestialsTraitEffects(champion);
+            if (t->name == "ShadowFighters") sf_count_t1 ++;
         }
     }
     //Reset the trait champion count 
@@ -45,6 +48,7 @@ void run_combat(std::vector<ChampState>& Team1, std::vector<ChampState>& Team2) 
             TraitActivation* t = TRAIT_POOL.at(trait);
             if (t->name != "Celestials" and t->name != "ShadowFighters") ApplyTraitEffects(*t,champion);
             else if(t->name == "Celestials") ApplyCelestialsTraitEffects(champion);
+            if (t->name == "ShadowFighters") sf_count_t2 ++;
             }
         }
     //Reset Numchamp count
@@ -63,12 +67,7 @@ void run_combat(std::vector<ChampState>& Team1, std::vector<ChampState>& Team2) 
         float seconds_in_combat = std::chrono::duration<float>(now - combat_start).count();
         //Apply ShadowFighter per second
         if(seconds_in_combat-Shadow_Fighters_last >= Shadow_Fighters_interval){
-            for (ChampState& champion: Team1){
-                for(Trait trait: champion.def.ChampTraits){
-                    TraitActivation* t = TRAIT_POOL.at(trait);
-                    if(t->name == "Shadow_Fighters") t->numchamps++;
-                    }
-            }
+            TRAIT_POOL.at(Trait::Shadow_Fighters)->numchamps = sf_count_t1;
             for (ChampState& champion: Team1){
                 if (TRAIT_POOL.at(Trait::Shadow_Fighters)->numchamps >= TRAIT_POOL.at(Trait::Shadow_Fighters)->treshold[0]){
                     if (std::find(champion.def.ChampTraits.begin(), champion.def.ChampTraits.end(), Trait::Shadow_Fighters) != champion.def.ChampTraits.end()){
@@ -76,13 +75,7 @@ void run_combat(std::vector<ChampState>& Team1, std::vector<ChampState>& Team2) 
                     }
                 }
             }
-            TRAIT_POOL.at(Trait::Shadow_Fighters)->numchamps = 0;
-            for (ChampState& champion: Team2){
-                for(Trait trait: champion.def.ChampTraits){
-                    TraitActivation* t = TRAIT_POOL.at(trait);
-                    if(t->name == "Shadow_Fighters") t->numchamps++;
-                    }
-            }
+            TRAIT_POOL.at(Trait::Shadow_Fighters)->numchamps = sf_count_t2;
             for (ChampState& champion: Team2){
                 if (TRAIT_POOL.at(Trait::Shadow_Fighters)->numchamps >= TRAIT_POOL.at(Trait::Shadow_Fighters)->treshold[0]){
                     if (std::find(champion.def.ChampTraits.begin(), champion.def.ChampTraits.end(), Trait::Shadow_Fighters) != champion.def.ChampTraits.end()){
@@ -90,7 +83,6 @@ void run_combat(std::vector<ChampState>& Team1, std::vector<ChampState>& Team2) 
                     }
                 }
             }
-            TRAIT_POOL.at(Trait::Shadow_Fighters)->numchamps = 0;
             Shadow_Fighters_last = seconds_in_combat;
         }
         //Start Team1 attacks
@@ -141,7 +133,7 @@ void run_combat(std::vector<ChampState>& Team1, std::vector<ChampState>& Team2) 
                     Ability(champion, Team2, Team1);
                     champion.mana_current = 0;
                 }       
-        }
+        } 
         if (someone_died){
             Team1 = RemoveDead(Team1);
             for (ChampState& champion: Team2){

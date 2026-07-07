@@ -3,8 +3,16 @@
 #include "EnemyFinding.h"
 #include <functional>
 #include "Grid.h"
+#include <chrono>
 #include <cmath>
+auto start = std::chrono::steady_clock::now();
 void managedamage(ChampState& champ1,ChampState& champ2, float dmg){
+    auto now = std::chrono::steady_clock::now();
+    float current_time = std::chrono::duration<float>(now - start).count();
+    if(current_time - champ2.is_invulnerable_until < 0){
+        dmg = 0;
+        std::cout<<champ2.def.name << " is invulnerable, can't deal damage";
+    }
     if (champ2.current_shield >0){
         if (champ2.current_shield >= dmg){
             champ2.current_shield -= dmg;
@@ -21,10 +29,10 @@ void managedamage(ChampState& champ1,ChampState& champ2, float dmg){
         champ1.hp_current += lifesteal_amount;
         std::cout<<"Champion "<<champ1.def.name<<" lifesteals "<<lifesteal_amount<<std::endl;
     }
-    if (champ1.execute >0){
+    if (champ1.execute > 0){
         if(champ2.hp_current<= champ2.hp_max*(champ1.execute/100)){
+            std::cout<<"Champion "<<champ1.def.name<<" executes "<<champ2.def.name<<" with "<<champ2.hp_current<<" health"<<std::endl;
             champ2.hp_current = 0;
-            std::cout<<"Champion "<<champ1.def.name<<" executes "<<champ2.def.name<<std::endl;
         }
     }
 }
@@ -41,7 +49,6 @@ void autoattack(ChampState& champ){
 std::vector<ChampState> RemoveDead(std::vector<ChampState> &team){
     std::vector<ChampState> aux = {};
     for (ChampState& champ: team){
-        std::cout<<"Champion "<<champ.def.name<<" has "<<champ.hp_current<<" hp"<<std::endl;
         if (champ.hp_current > 0){
             std::cout<<"Champion "<<champ.def.name<<" is alive with "<<champ.hp_current<<" hp"<<std::endl;
             aux.push_back(champ);
@@ -217,6 +224,11 @@ void sable_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::ve
 }
 void goliath_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::vector<ChampState>& EnemyTeam){
     //Yet to be programmed
+    auto now = std::chrono::steady_clock::now();
+    float time = std::chrono::duration<float>(now - start).count();
+    champ.is_invulnerable_until = time + 2.0f;
+    std::cout<<"Champion "<<champ.def.name<<" has activated ability becoming invulnerable for 2 seconds"<<std::endl;
+
 }
 void solarix_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::vector<ChampState>& EnemyTeam){
     for (ChampState& enemy: EnemyTeam){

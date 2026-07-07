@@ -36,6 +36,7 @@ struct ChampState{
     float lifesteal = 0;
     float execute = 0;
     float hp_max = 0;
+    float is_invulnerable_until = 0.0f;
     ChampState(const ChampDef& d, int s): def(d), star(s){
         range = def.range;
         hp_current = def.hp[star];
