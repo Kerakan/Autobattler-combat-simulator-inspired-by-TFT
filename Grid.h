@@ -49,3 +49,5 @@ std::vector<GridPos> Trajectory(GridPos a, GridPos b){
     }
     return HexesInTraj;
 }
+std::vector<GridPos> GridTeam2 = {GridPos(0,-3),GridPos(1,-3),GridPos(2,-3),GridPos(3,-3),GridPos(-1,-2),GridPos(0,-2),GridPos(1,-2),GridPos(2,-2), GridPos(3,-2),GridPos(-1,-1),GridPos(0,-1),GridPos(1,-1),GridPos(2,-1)};
+std::vector<GridPos> GridTeam1 = {GridPos(-2,0),GridPos(-1,0),GridPos(0,0),GridPos(1,0),GridPos(-3,1),GridPos(-2,1),GridPos(-1,1),GridPos(0,1),GridPos(1,1),GridPos(-3,2),GridPos(-2,2),GridPos(-1,2),GridPos(0,2)};

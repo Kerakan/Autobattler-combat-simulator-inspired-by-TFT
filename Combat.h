@@ -5,7 +5,15 @@
 #include "Team.h"
 #include <chrono>
 #include "AttacksAbilitiesDeathHandling.h"
+#include "Draw.h"
 void run_combat(std::vector<ChampState>& Team1, std::vector<ChampState>& Team2) {
+    InitWindow(GetMonitorWidth(0), GetMonitorHeight(0), "Autobattler");
+    ToggleBorderlessWindowed();
+    MaximizeWindow();
+    int Width = GetScreenWidth();
+    int Height = GetScreenHeight();
+    SetTargetFPS(120);
+    EnableCursor();
     bool someone_died = false;
     auto combat_start = std::chrono::steady_clock::now();
     float Shadow_Fighters_last = 0.0f;
@@ -62,7 +70,12 @@ void run_combat(std::vector<ChampState>& Team1, std::vector<ChampState>& Team2) 
     //Define max hp for each champion
     for (ChampState& c: Team1) c.hp_max = c.hp_current;
     for (ChampState& c: Team2) c.hp_max = c.hp_current;
-    while (true) {
+    while (!WindowShouldClose()) {
+        BeginDrawing();
+        DrawInterfaceBackGround();
+        DrawStartButton(Width,Height);
+        DrawConsoleLog(Width,Height);
+        DrawGrid(Width,Height);
         auto now = std::chrono::steady_clock::now();
         float seconds_in_combat = std::chrono::duration<float>(now - combat_start).count();
         //Apply ShadowFighter per second
@@ -86,9 +99,10 @@ void run_combat(std::vector<ChampState>& Team1, std::vector<ChampState>& Team2) 
             Shadow_Fighters_last = seconds_in_combat;
         }
         //Start Team1 attacks
+        DrawChampions(Team1);
         for (ChampState& champion: Team1){
             if (champion.enemytarget == nullptr or champion.def.name == "Asura"){
-                FindClosestEnemy(champion, Team2);
+                FindClosestEnemy(champion, Team1, Team2);
             }
             if (champion.hp_current <= 0 or champion.enemytarget->hp_current <= 0){
                 someone_died = true;
@@ -117,9 +131,10 @@ void run_combat(std::vector<ChampState>& Team1, std::vector<ChampState>& Team2) 
             break;
         }
         //Repeat the same as before but for the other team
+        DrawChampions(Team2);
         for (ChampState& champion: Team2){
             if (champion.enemytarget == nullptr or champion.def.name == "Asura"){
-                FindClosestEnemy(champion, Team1);
+                FindClosestEnemy(champion, Team2, Team1);
             }
             if (champion.hp_current <= 0 or champion.enemytarget->hp_current <= 0){
                 someone_died = true;
@@ -149,6 +164,7 @@ void run_combat(std::vector<ChampState>& Team1, std::vector<ChampState>& Team2) 
             std::cout << "DRAW\n";
             break;
         }
-
+        EndDrawing();
     }
+    CloseWindow();
 }
