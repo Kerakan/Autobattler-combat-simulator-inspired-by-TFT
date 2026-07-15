@@ -27,6 +27,7 @@ void managedamage(ChampState& champ1,ChampState& champ2, float dmg){
     if (champ1.lifesteal > 0){
         float lifesteal_amount = (champ1.lifesteal/100)*dmg;
         champ1.hp_current += lifesteal_amount;
+        if (champ1.hp_current >= champ1.hp_max) champ1.hp_current = champ1.hp_max;
         std::cout<<"Champion "<<champ1.def.name<<" lifesteals "<<lifesteal_amount<<std::endl;
     }
     if (champ1.execute > 0){

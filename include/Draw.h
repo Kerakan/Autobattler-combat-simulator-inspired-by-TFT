@@ -59,6 +59,57 @@ void DrawChampions(std::vector<ChampState>& Team){
         DrawHealthBar(c.x , c.y, 50, Champ);
     }
 }
+void DrawTraitsSkeleton(){
+    DrawText("Team 2 Traits", 100, 100, 25, YELLOW);
+    DrawLine(50,500,150,500, WHITE);
+    DrawText("Team 1 Traits", 100, 550, 25, RED);
+}
+void DrawTraits(int position, std::vector<ChampState> &Team, std::vector<TraitActivation*> TraitsInTeam){
+    DrawTraitsSkeleton();
+    int i = 1;
+    for (TraitActivation* trait: TraitsInTeam){
+        if (trait->name != "Celestials"){
+            if (position == 1){
+                std::string text = trait->name+ " " + std::to_string(trait->numchampsT1);
+                if (trait->numchampsT1 >= trait->treshold[1]){
+                    DrawText(text.c_str(), 100, 550 + 75*i, 20, GOLD);
+                    i++;
+                }
+                else if (trait->numchampsT1 >= trait->treshold[0]){
+                    DrawText(text.c_str(), 100, 550 + 75*i, 20, LIGHTGRAY);
+                    i++;
+                }
+            }
+            else if (position == 0){
+                std::string text = trait->name+ " " + std::to_string(trait->numchampsT2);
+                if (trait->numchampsT2 >= trait->treshold[1]){
+                    DrawText(text.c_str(), 100, 100 + 75*i, 20, GOLD);
+                    i++;
+                }
+                else if (trait->numchampsT2 >= trait->treshold[0]){
+                    DrawText(text.c_str(), 100, 100 + 75*i, 20, LIGHTGRAY);
+                    i++;
+                }
+            }
+        }
+        else{
+            if (position == 1){
+                std::string text = trait->name+ " " + std::to_string(trait->numchampsT1);
+                if (trait->numchampsT1 >= trait->treshold[0]){
+                    DrawText(text.c_str(), 100, 550 + 75*i, 20, SKYBLUE);
+                    i++;
+                }
+            }
+            else if (position == 0){
+                std::string text = trait->name+ " " + std::to_string(trait->numchampsT2);
+                if (trait->numchampsT2 >= trait->treshold[1]){
+                    DrawText(text.c_str(), 100, 100 + 75*i, 20, SKYBLUE);
+                    i++;
+                }
+            }
+        }
+    }
+}
 void DrawConsoleLog(int width, int height){
     DrawRectangleLines((width-600), height, 600, -400, WHITE);
 }
