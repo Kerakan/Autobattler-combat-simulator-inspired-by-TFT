@@ -2,22 +2,26 @@
 #include "raylib.h"
 #include "Grid.h"
 #include "Champ.h"
+#include "TraitStatSystem.h"
 #include <cmath>
-void DrawInterfaceBackGround(){
+#include "Log.h"
+void DrawInterfaceBackGround(int width, int height){
     ClearBackground(BLACK);
+    DrawText("Press A/D to Accelerate/Decelerate", 10, height-30, 20, WHITE);
+    DrawFPS(width-100,20);
 };
-void DrawStartButton(int width, int height){
-    DrawRectangleLines((width/2)-150, height-150, 300, 150, WHITE);
-    DrawRectangle((width/2)-149, height-149, 298, 148, BLUE);
-    DrawText("START",(width/2)-85,(height-100),50,WHITE);
-    Vector2 MousePos = GetMousePosition();
-    Rectangle btnBounds = {(width/2)-150, height-150, 300, 150};
-    if (CheckCollisionPointRec(MousePos,btnBounds)){
-        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-            DrawText("COMBAT STARTED",(width/2)-85,(height/2)-100,50,WHITE);
-        }
-    }
-}
+//void DrawStartButton(int width, int height){
+    //DrawRectangleLines((width/2)-150, height-150, 300, 150, WHITE);
+  //  DrawRectangle((width/2)-149, height-149, 298, 148, BLUE);
+//    DrawText("START",(width/2)-85,(height-100),50,WHITE);
+    //Vector2 MousePos = GetMousePosition();
+  //  Rectangle btnBounds = {(width/2)-150, height-150, 300, 150};
+//    if (CheckCollisionPointRec(MousePos,btnBounds)){
+        //if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+      //      DrawText("COMBAT STARTED",(width/2)-85,(height/2)-100,50,WHITE);
+    //    }
+  //  }
+//}
 void DrawHexagon(Vector2 center,Color color){
     DrawPolyLines(center,6,75,90,color);
 }
@@ -47,6 +51,9 @@ void DrawHealthBar(int Cx, int Cy, int rad,ChampState& champion){
     //DrawShield
     float shield_mult = std::max(champion.current_shield/champion.hp_max,0.0f);
     DrawRectangle(Cx-rad+1+(w - 2)*hp_mult,Cy+rad+1,  (w - 2)*hp_mult*shield_mult, l - 2, WHITE);
+    //Now We Show Health in Numbers
+    std::string health = std::to_string(int(champion.hp_current)) + "/" + std::to_string(int(champion.hp_max));
+    DrawText(health.c_str(),Cx + w - 105, Cy + l + 40, 10, WHITE);
 }
 void DrawChampions(std::vector<ChampState>& Team){
     for (ChampState& Champ: Team){
@@ -111,5 +118,37 @@ void DrawTraits(int position, std::vector<ChampState> &Team, std::vector<TraitAc
     }
 }
 void DrawConsoleLog(int width, int height){
-    DrawRectangleLines((width-600), height, 600, -400, WHITE);
+    int size = 15;
+    int max_lines = 390/20;
+    int height_start = height - 395;
+    int width_start = (width - 600) + 5;
+    int start = 0;
+    int texts = LogTxts.size();
+    if (texts >= max_lines){
+        start = texts-max_lines;
+    }
+    DrawRectangleLines((width-600), height - 400, 600, 400, WHITE);
+    for (int i = start; i<texts; i++){
+        DrawText(LogTxts[i].c_str(), width_start, height_start + (i-start)*20, size, WHITE);
+    }
+}
+void Accelerate(std::vector<ChampState>& Team1, std::vector<ChampState>& Team2){
+    for (ChampState& Champ: Team1){
+        Champ.attackspeed_current += 0.01f;
+        Champ.attackspeed_current = std::max(Champ.attackspeed_current, Champ.def.attackspeed[Champ.star]*3);
+    }
+    for (ChampState& Champ: Team2){
+        Champ.attackspeed_current += 0.01f;
+        Champ.attackspeed_current = std::max(Champ.attackspeed_current, Champ.def.attackspeed[Champ.star]*3);
+    }
+}
+void Decelerate(std::vector<ChampState>& Team1, std::vector<ChampState>& Team2){
+    for (ChampState& Champ: Team1){
+        Champ.attackspeed_current -= 0.01f;
+        Champ.attackspeed_current = std::max(Champ.attackspeed_current, Champ.def.attackspeed[Champ.star]/3);
+    }
+    for (ChampState& Champ: Team2){
+        Champ.attackspeed_current -= 0.01f;
+        Champ.attackspeed_current = std::max(Champ.attackspeed_current, Champ.def.attackspeed[Champ.star]/3);
+    }
 }

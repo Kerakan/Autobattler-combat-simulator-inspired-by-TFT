@@ -6,6 +6,7 @@
 #include <chrono>
 #include "AttacksAbilitiesDeathHandling.h"
 #include "Draw.h"
+#include "Log.h"
 void run_combat(std::vector<ChampState>& Team1, std::vector<ChampState>& Team2) {
     InitWindow(GetMonitorWidth(0), GetMonitorHeight(0), "Autobattler");
     ToggleBorderlessWindowed();
@@ -38,7 +39,7 @@ void run_combat(std::vector<ChampState>& Team1, std::vector<ChampState>& Team2) 
             else if(t->name == "Celestials") ApplyCelestialsTraitEffects(champion,1);
         }
     }
-    std::cout<<"Team 1 traits activated"<<std::endl;
+    Log("Team 1 traits activated");
     for (ChampState& champion: Team2){
         for(Trait trait: champion.def.ChampTraits){
             TraitActivation* t = TRAIT_POOL.at(trait);
@@ -56,20 +57,22 @@ void run_combat(std::vector<ChampState>& Team1, std::vector<ChampState>& Team2) 
             else if(t->name == "Celestials") ApplyCelestialsTraitEffects(champion,2);
             }
         }
-    std::cout<<"Team 2 traits activated"<<std::endl;
+    Log("Team 2 traits activated");
     //Define max hp for each champion
     for (ChampState& c: Team1) c.hp_max = c.hp_current;
     for (ChampState& c: Team2) c.hp_max = c.hp_current;
     while (!WindowShouldClose()) {
         BeginDrawing();
-        DrawInterfaceBackGround();
+        DrawInterfaceBackGround(Width,Height);
         DrawTraits(1,Team1,TraitsInTeam1);
         DrawTraits(0,Team2,TraitsInTeam2);
-        DrawStartButton(Width,Height);
+        //DrawStartButton(Width,Height);
         DrawConsoleLog(Width,Height);
         DrawGrid(Width,Height);
         auto now = std::chrono::steady_clock::now();
         float seconds_in_combat = std::chrono::duration<float>(now - combat_start).count();
+        if(IsKeyDown(KEY_A)) Accelerate(Team1, Team2);
+        if(IsKeyDown(KEY_D)) Decelerate(Team1, Team2);
         //Apply ShadowFighter per second
         if(seconds_in_combat-Shadow_Fighters_last >= Shadow_Fighters_interval){
             for (ChampState& champion: Team1){
@@ -150,10 +153,10 @@ void run_combat(std::vector<ChampState>& Team1, std::vector<ChampState>& Team2) 
             std::cout << "Team 2 wins!\n";
             break;
         }
-        if (seconds_in_combat > 30) {
-            std::cout << "DRAW\n";
-            break;
-        }
+//        if (seconds_in_combat > 30) {
+//            std::cout << "DRAW\n";
+//            break;
+//        }
         EndDrawing();
     }
     CloseWindow();

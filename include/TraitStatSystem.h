@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <ctime>
 #include "Combat.h"
+#include "Log.h"
 struct TraitActivation{
     std::string name;
     std::vector<int> treshold;
@@ -114,8 +115,8 @@ void ApplyTraitEffects(TraitActivation& trait, ChampState& Champion, int TeamNum
             Champion.hp_current = Champion.hp_current * trait.hp_modifier[1];
             Champion.lifesteal = trait.lifesteal;
             trait.is_active = true;
-            Champion.execute =trait.execute[1];
-            std::cout<< "Applied trait " + trait.name +" with treshold " + std::to_string(trait.treshold[1])<<"to champion "<<Champion.def.name<<std::endl;
+            Champion.execute = trait.execute[1];
+            Log("Applied trait " + trait.name + " with treshold " + std::to_string(trait.treshold[1]) + " to champion " + Champion.def.name);
         }
         else if (trait.numchampsT1 >= trait.treshold[0]){
             Champion.ad_current = Champion.ad_current * trait.ad_modifier[0];
@@ -123,11 +124,11 @@ void ApplyTraitEffects(TraitActivation& trait, ChampState& Champion, int TeamNum
             Champion.hp_current = Champion.hp_current * trait.hp_modifier[0];
             Champion.lifesteal = trait.lifesteal;
             trait.is_active = true;
-            Champion.execute =trait.execute[0];
-            std::cout<< "Applied trait " + trait.name +" with treshold " + std::to_string(trait.treshold[0])<<" to champion "<<Champion.def.name<<std::endl;
+            Champion.execute = trait.execute[0];
+            Log("Applied trait " + trait.name + " with treshold " + std::to_string(trait.treshold[0]) + " to champion " + Champion.def.name);
         }
         else{
-            std::cout<< "Requirements not met to apply trait " + trait.name<<" to champion "<<Champion.def.name <<std::endl;
+            Log("Requirements not met to apply trait " + trait.name + " to champion " + Champion.def.name);
         }
     }
     if (TeamNumber == 2){
@@ -137,8 +138,8 @@ void ApplyTraitEffects(TraitActivation& trait, ChampState& Champion, int TeamNum
             Champion.hp_current = Champion.hp_current * trait.hp_modifier[1];
             Champion.lifesteal = trait.lifesteal;
             trait.is_active = true;
-            Champion.execute =trait.execute[1];
-            std::cout<< "Applied trait " + trait.name +" with treshold " + std::to_string(trait.treshold[1])<<"to champion "<<Champion.def.name<<std::endl;
+            Champion.execute = trait.execute[1];
+            Log("Applied trait " + trait.name + " with treshold " + std::to_string(trait.treshold[1]) + " to champion " + Champion.def.name);
         }
         else if (trait.numchampsT2 >= trait.treshold[0]){
             Champion.ad_current = Champion.ad_current * trait.ad_modifier[0];
@@ -146,11 +147,8 @@ void ApplyTraitEffects(TraitActivation& trait, ChampState& Champion, int TeamNum
             Champion.hp_current = Champion.hp_current * trait.hp_modifier[0];
             Champion.lifesteal = trait.lifesteal;
             trait.is_active = true;
-            Champion.execute =trait.execute[0];
-            std::cout<< "Applied trait " + trait.name +" with treshold " + std::to_string(trait.treshold[0])<<" to champion "<<Champion.def.name<<std::endl;
-        }
-        else{
-            std::cout<< "Requirements not met to apply trait " + trait.name<<" to champion "<<Champion.def.name <<std::endl;
+            Champion.execute = trait.execute[0];
+            Log("Applied trait " + trait.name + " with treshold " + std::to_string(trait.treshold[0]) + " to champion " + Champion.def.name);
         }
     }
 };
@@ -163,7 +161,7 @@ void ApplyCelestialsTraitEffects(ChampState& Champion, int TeamNumber){
         Champion.ad_current = Champion.ad_current * Celestials.ad_modifier[0];
         Champion.ap_current = Champion.ap_current * Celestials.ap_modifier[0];
         Champion.hp_current = Champion.hp_current * Celestials.hp_modifier[0];
-        std::cout<< "Applied trait Celestial with treshold " + std::to_string(n)<<" to champion "<<Champion.def.name<<std::endl;
+        Log("Applied trait Celestial with treshold " + std::to_string(n) + " to champion " + Champion.def.name);
     }
     else if (TeamNumber==2){
         int n = Celestials.numchampsT2;
@@ -173,7 +171,7 @@ void ApplyCelestialsTraitEffects(ChampState& Champion, int TeamNumber){
         Champion.ad_current = Champion.ad_current * Celestials.ad_modifier[0];
         Champion.ap_current = Champion.ap_current * Celestials.ap_modifier[0];
         Champion.hp_current = Champion.hp_current * Celestials.hp_modifier[0];
-        std::cout<< "Applied trait Celestial with treshold " + std::to_string(n)<<" to champion "<<Champion.def.name<<std::endl;
+        Log("Applied trait Celestial with treshold " + std::to_string(n) + " to champion " + Champion.def.name);
     }
 };
 void ApplyShadowFighterTraitEffects(ChampState& Champion, int TeamNumber){
@@ -184,18 +182,17 @@ void ApplyShadowFighterTraitEffects(ChampState& Champion, int TeamNumber){
             Shadow_Fighters.hp_modifier = {1.0f + 0.015f};
             Champion.ad_current = Champion.ad_current * Shadow_Fighters.ad_modifier[0];
             Champion.ap_current = Champion.ap_current * Shadow_Fighters.ap_modifier[0];
+            Champion.hp_max = Champion.hp_max * Shadow_Fighters.hp_modifier[0];
             Champion.hp_current = Champion.hp_current * Shadow_Fighters.hp_modifier[0];
-            std::cout<< "Applied trait Shadow Fighters with treshold " + std::to_string(Shadow_Fighters.treshold[1])<<" to champion "<<Champion.def.name<<std::endl;
         }
-        else if(Shadow_Fighters.numchampsT1>= Shadow_Fighters.treshold[0])
-        {
+        else if(Shadow_Fighters.numchampsT1 >= Shadow_Fighters.treshold[0]){
             Shadow_Fighters.ad_modifier = {1.0f + 0.01f};
             Shadow_Fighters.ap_modifier = {1.0f + 0.01f};
             Shadow_Fighters.hp_modifier = {1.0f + 0.01f};
             Champion.ad_current = Champion.ad_current * Shadow_Fighters.ad_modifier[0];
             Champion.ap_current = Champion.ap_current * Shadow_Fighters.ap_modifier[0];
+            Champion.hp_max = Champion.hp_max * Shadow_Fighters.hp_modifier[1];
             Champion.hp_current = Champion.hp_current * Shadow_Fighters.hp_modifier[0];
-            std::cout<< "Applied trait Shadow Fighters with treshold " + std::to_string(Shadow_Fighters.treshold[0])<<" to champion "<<Champion.def.name<<std::endl;
         }
     }
     if (TeamNumber == 2){
@@ -205,18 +202,17 @@ void ApplyShadowFighterTraitEffects(ChampState& Champion, int TeamNumber){
             Shadow_Fighters.hp_modifier = {1.0f + 0.015f};
             Champion.ad_current = Champion.ad_current * Shadow_Fighters.ad_modifier[0];
             Champion.ap_current = Champion.ap_current * Shadow_Fighters.ap_modifier[0];
+            Champion.hp_max = Champion.hp_max * Shadow_Fighters.hp_modifier[0];
             Champion.hp_current = Champion.hp_current * Shadow_Fighters.hp_modifier[0];
-            std::cout<< "Applied trait Shadow Fighters with treshold " + std::to_string(Shadow_Fighters.treshold[1])<<" to champion "<<Champion.def.name<<std::endl;
         }
-        else if(Shadow_Fighters.numchampsT2 >= Shadow_Fighters.treshold[0])
-        {
+        else if(Shadow_Fighters.numchampsT2 >= Shadow_Fighters.treshold[0]){
             Shadow_Fighters.ad_modifier = {1.0f + 0.01f};
             Shadow_Fighters.ap_modifier = {1.0f + 0.01f};
             Shadow_Fighters.hp_modifier = {1.0f + 0.01f};
             Champion.ad_current = Champion.ad_current * Shadow_Fighters.ad_modifier[0];
             Champion.ap_current = Champion.ap_current * Shadow_Fighters.ap_modifier[0];
+            Champion.hp_max = Champion.hp_max * Shadow_Fighters.hp_modifier[1];
             Champion.hp_current = Champion.hp_current * Shadow_Fighters.hp_modifier[0];
-            std::cout<< "Applied trait Shadow Fighters with treshold " + std::to_string(Shadow_Fighters.treshold[0])<<" to champion "<<Champion.def.name<<std::endl;
         }
     }
 }

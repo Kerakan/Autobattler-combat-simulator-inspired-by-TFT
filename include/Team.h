@@ -4,6 +4,7 @@
 #include "Champ.h"
 #include <vector>
 #include "ChampionPool.h"
+#include "Log.h"
 int askteamcapacity(){
     int team_capacity;
     std::cout << "Input your desired team Capacity: " << std::endl;
@@ -33,10 +34,10 @@ std::vector<ChampState> CreateTeam(){
         team.push_back(Champion);
         n += 1;
     };
-    std::cout<<"Created Team with the following champions:"<<std::endl;
+    Log("Created Team with the following champions:");
     for (int i = 0; i<x; i++){
         std::string name = team[i].def.name;
-        std::cout<< name<<std::endl;
+        Log(name);
     }
     return team;
 };
