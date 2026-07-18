@@ -46,11 +46,11 @@ void FindClosestEnemy(ChampState &Champ, std::vector<ChampState> &AllyTeam, std:
     Champ.enemytarget = &EnemyTeam[0];
     int closest_distance = 1000;
     if (Champ.def.name == "Asura"){
-        float lowest_hp =EnemyTeam[0].def.hp[EnemyTeam[0].star];
+        float lowest_hp =EnemyTeam[0].hp_current;
         ChampState* target = Champ.enemytarget;
         for (ChampState &Enemy: EnemyTeam){
-            if (Enemy.def.hp[Enemy.star] < lowest_hp){
-                lowest_hp = Enemy.def.hp[Enemy.star];
+            if (Enemy.hp_current < lowest_hp){
+                lowest_hp = Enemy.hp_current;
                 Champ.enemytarget = &Enemy;
             }
         }

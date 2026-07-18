@@ -5,23 +5,36 @@
 #include "TraitStatSystem.h"
 #include <cmath>
 #include "Log.h"
+bool combat_started = false;
+auto combat_start = std::chrono::steady_clock::now();
+void DrawDamageDealt(ChampState &EnemyChamp, int dmg){
+
+}
 void DrawInterfaceBackGround(int width, int height){
     ClearBackground(BLACK);
     DrawText("Press A/D to Accelerate/Decelerate", 10, height-30, 20, WHITE);
     DrawFPS(width-100,20);
 };
-//void DrawStartButton(int width, int height){
-    //DrawRectangleLines((width/2)-150, height-150, 300, 150, WHITE);
-  //  DrawRectangle((width/2)-149, height-149, 298, 148, BLUE);
-//    DrawText("START",(width/2)-85,(height-100),50,WHITE);
-    //Vector2 MousePos = GetMousePosition();
-  //  Rectangle btnBounds = {(width/2)-150, height-150, 300, 150};
-//    if (CheckCollisionPointRec(MousePos,btnBounds)){
-        //if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-      //      DrawText("COMBAT STARTED",(width/2)-85,(height/2)-100,50,WHITE);
-    //    }
-  //  }
-//}
+void DrawSecondsInCombat(int width, int height, int seconds){
+    DrawRectangleLines((width/2)-150, height-150, 300, 150, WHITE);
+    DrawRectangle((width/2)-149, height-149, 298, 148, YELLOW);
+    DrawText(std::to_string(seconds).c_str(),(width/2)-20,(height-100),50,WHITE);
+}
+void DrawStartButton(int width, int height){
+    if (!combat_started){
+        DrawRectangleLines((width/2)-150, height-150, 300, 150, WHITE);
+        DrawRectangle((width/2)-149, height-149, 298, 148, BLUE);
+        DrawText("START",(width/2)-85,(height-100),50,WHITE);
+        Vector2 MousePos = GetMousePosition();
+        Rectangle btnBounds = {(width/2)-150, height-150, 300, 150};
+        if (CheckCollisionPointRec(MousePos,btnBounds)){
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+                combat_started = true;
+                combat_start = std::chrono::steady_clock::now();
+            }
+        }
+    }
+}
 void DrawHexagon(Vector2 center,Color color){
     DrawPolyLines(center,6,75,90,color);
 }

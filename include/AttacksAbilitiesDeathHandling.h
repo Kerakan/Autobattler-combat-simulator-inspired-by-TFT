@@ -94,6 +94,7 @@ void totom_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::ve
     Log("Champion " + champ.def.name + " uses ability gaining a shield of " + std::to_string(champ.current_shield - x));
 }
 void asura_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::vector<ChampState>& EnemyTeam){
+    //Programmed inside EnemyFinding.h
 }
 void dante_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::vector<ChampState>& EnemyTeam){
     float damage = champ.ap_current*(100/(50+champ.enemytarget->magicres_current));
