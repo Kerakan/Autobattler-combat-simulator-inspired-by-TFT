@@ -7,7 +7,7 @@
 #include <cmath>
 #include "Log.h"
 auto start = std::chrono::steady_clock::now();
-void managedamage(ChampState& champ1,ChampState& champ2, float dmg){
+void managedamage(ChampState& champ1,ChampState& champ2, float dmg, std::vector<ChampState> &AllyTeam, std::vector<ChampState> &EnemyTeam){
     auto now = std::chrono::steady_clock::now();
     float current_time = std::chrono::duration<float>(now - start).count();
     if(current_time - champ2.is_invulnerable_until < 0){
@@ -25,6 +25,17 @@ void managedamage(ChampState& champ1,ChampState& champ2, float dmg){
         }
     }
     champ2.hp_current -= dmg;
+    TimedTexts.push_back(TimedText(std::to_string(int(dmg)),champ2.pos.q, champ2.pos.r, current_time));
+    if (champ2.def.name == "Draco"){
+        for(ChampState &champ: EnemyTeam){
+            if (champ.def.name == "Lyra") champ.current_shield += 0.1f * dmg;
+        }
+    }
+    if (champ1.def.name == "Lyra"){
+        for(ChampState &champ: AllyTeam){
+            if (champ.def.name == "Draco") champ.hp_current = std::min(champ.hp_max,champ.hp_current + 0.1f * dmg);
+        }
+    }
     if (champ1.lifesteal > 0){
         float lifesteal_amount = (champ1.lifesteal/100)*dmg;
         champ1.hp_current += lifesteal_amount;
@@ -38,14 +49,14 @@ void managedamage(ChampState& champ1,ChampState& champ2, float dmg){
         }
     }
 }
-void autoattack(ChampState& champ){
+void autoattack(ChampState& champ, std::vector<ChampState> &AllyTeam, std::vector<ChampState> &EnemyTeam){
     if (champ.enemytarget == nullptr){
         Log("No enemy target found for " + champ.def.name);
         return;
     }
     float damage = champ.ad_current*(100/(100+champ.enemytarget->armor_current));
     Log("Champion " + champ.def.name + " attacks with AD: " + std::to_string(champ.ad_current) + " to " + champ.enemytarget->def.name + " dealing " + std::to_string(damage));
-    managedamage(champ, *champ.enemytarget, damage);
+    managedamage(champ, *champ.enemytarget, damage, AllyTeam, EnemyTeam);
     champ.mana_current += 5;
 }
 std::vector<ChampState> RemoveDead(std::vector<ChampState> &team){
@@ -84,7 +95,7 @@ void akira_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::ve
     }
     for (ChampState& target: targets){
         float damage = champ.ap_current*(100/(50+target.magicres_current));
-        managedamage(champ, target, damage);
+        managedamage(champ, target, damage, AllyTeam, EnemyTeam);
         Log("Champion " + champ.def.name + " uses ability on " + target.def.name + " dealing " + std::to_string(damage) + " damage");
     }
 }
@@ -98,7 +109,7 @@ void asura_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::ve
 }
 void dante_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::vector<ChampState>& EnemyTeam){
     float damage = champ.ap_current*(100/(50+champ.enemytarget->magicres_current));
-    managedamage(champ, *champ.enemytarget, damage);
+    managedamage(champ, *champ.enemytarget, damage, AllyTeam, EnemyTeam);
     Log("Champion " + champ.def.name + " uses ability on " + champ.enemytarget->def.name + " dealing " + std::to_string(damage) + " damage");
 }
 void takeshi_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::vector<ChampState>& EnemyTeam){
@@ -107,7 +118,7 @@ void takeshi_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::
     else if (champ.star==2) champ.ad_current += 25;
     float extra_ad = champ.ad_current-champ.def.ad[champ.star];
     Log("Champion " + champ.def.name + " uses ability getting " + std::to_string(extra_ad) + " more ad");
-    autoattack(champ);
+    autoattack(champ, AllyTeam, EnemyTeam);
     champ.ad_current -= extra_ad;
 }
 void draco_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::vector<ChampState>& EnemyTeam){
@@ -129,7 +140,7 @@ void lyra_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::vec
             if(Hex == enemy.pos){
                 float damage = champ.ad_current*(100/(100+enemy.armor_current))*(1+(1.0f/(2+targetshit)));
                 Log("Champion " + champ.def.name + " deals " + std::to_string(damage) + " damage to " + enemy.def.name);
-                managedamage(champ, enemy, damage);
+                managedamage(champ, enemy, damage, AllyTeam, EnemyTeam);
                 targetshit++;
                 break;
             }
@@ -143,14 +154,14 @@ void orion_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::ve
     else if (champ.star==2) champ.ad_current += 40;
     float extra_ad = champ.ad_current-champ.def.ad[champ.star];
     Log("Champion " + champ.def.name + " uses ability getting " + std::to_string(extra_ad) + " more ad");
-    autoattack(champ);
+    autoattack(champ, AllyTeam, EnemyTeam);
     champ.ad_current -= extra_ad;
 }
 void andromeda_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::vector<ChampState>& EnemyTeam){
     float x = champ.ad_current;
     champ.ad_current *= 1.25f;
     Log("Champion " + champ.def.name + " uses ability getting " + std::to_string(0.25f*champ.ad_current) + " more ad");
-    autoattack(champ);
+    autoattack(champ, AllyTeam, EnemyTeam);
     champ.ad_current = x;
 }
 void delphinus_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::vector<ChampState>& EnemyTeam){
@@ -170,7 +181,7 @@ void hades_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::ve
             if(Hex == enemy.pos){
                 float damage = champ.ap_current*(100/(50+enemy.magicres_current))*(1+(1.0f/(2+targetshit)));
                 Log("Champion " + champ.def.name + " deals " + std::to_string(damage) + " damage to " + enemy.def.name);
-                managedamage(champ, enemy, damage);
+                managedamage(champ, enemy, damage, AllyTeam, EnemyTeam);
                 targetshit++;
                 break;
             }
@@ -184,7 +195,7 @@ void thanatos_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std:
     else if (champ.star==2) champ.ad_current += 40;
     float extra_ad = champ.ad_current-champ.def.ad[champ.star];
     Log("Champion " + champ.def.name + " uses ability getting " + std::to_string(extra_ad) + " more ad");
-    autoattack(champ);
+    autoattack(champ, AllyTeam, EnemyTeam);
     champ.ad_current -= extra_ad;
 }
 void vesper_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::vector<ChampState>& EnemyTeam){
@@ -201,7 +212,7 @@ void cassian_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::
 void sable_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::vector<ChampState>& EnemyTeam){
     champ.lifesteal += 20;
     Log("Champion " + champ.def.name + " uses ability gaining 20% lifesteal for the next autoattack");
-    autoattack(champ);
+    autoattack(champ, AllyTeam, EnemyTeam);
     champ.lifesteal -= 20;
 }
 void goliath_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::vector<ChampState>& EnemyTeam){
@@ -213,7 +224,7 @@ void goliath_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::
 void solarix_ability(ChampState& champ, std::vector<ChampState>& AllyTeam, std::vector<ChampState>& EnemyTeam){
     for (ChampState& enemy: EnemyTeam){
         float damage = champ.ap_current*(100/(50+enemy.magicres_current));
-        managedamage(champ, enemy, damage);
+        managedamage(champ, enemy, damage, AllyTeam, EnemyTeam);
         Log("Champion " + champ.def.name + " uses ability on " + enemy.def.name + " dealing " + std::to_string(damage) + " damage");
     }
 }

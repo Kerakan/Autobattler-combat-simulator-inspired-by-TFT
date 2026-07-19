@@ -5,10 +5,20 @@
 #include "TraitStatSystem.h"
 #include <cmath>
 #include "Log.h"
+#include <utility>
 bool combat_started = false;
 auto combat_start = std::chrono::steady_clock::now();
-void DrawDamageDealt(ChampState &EnemyChamp, int dmg){
-
+void DrawDamage(){
+    auto now = std::chrono::steady_clock::now();
+    float current_time = std::chrono::duration<float>(now - start).count();
+    int size = TimedTexts.size();
+    for (int i = 0; i<size ; i++){
+        if (TimedTexts[i].defined_until < current_time){
+            continue;
+        }
+        std::string text = TimedTexts[i].text + " DMG";
+        DrawText(text.c_str(), 750 + 75 * (TimedTexts[i].q * sqrt(3) + TimedTexts[i].r * sqrt(3)/2) + 60, 537.5 + TimedTexts[i].r * 112.5 - 20, 12, RED);
+    }
 }
 void DrawInterfaceBackGround(int width, int height){
     ClearBackground(BLACK);

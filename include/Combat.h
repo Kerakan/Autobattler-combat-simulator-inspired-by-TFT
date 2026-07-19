@@ -67,6 +67,7 @@ void run_combat(std::vector<ChampState>& Team1, std::vector<ChampState>& Team2) 
         DrawTraits(0,Team2,TraitsInTeam2);
         DrawStartButton(Width,Height);
         DrawConsoleLog(Width,Height);
+        DrawDamage();
         DrawGrid(Width,Height);
         if (combat_started){
             auto now = std::chrono::steady_clock::now();
@@ -104,7 +105,7 @@ void run_combat(std::vector<ChampState>& Team1, std::vector<ChampState>& Team2) 
                 }
                 if (seconds_in_combat-champion.lastautoattacktime >= 1.0f/champion.attackspeed_current){
                     champion.lastautoattacktime = seconds_in_combat;
-                    autoattack(champion);
+                    autoattack(champion, Team1, Team2);
                 }   
                 if (champion.mana_current >= champion.def.mana_max and champion.def.mana_max > 0){
                         Ability(champion, Team1, Team2);
@@ -136,7 +137,7 @@ void run_combat(std::vector<ChampState>& Team1, std::vector<ChampState>& Team2) 
                 } 
                 if (seconds_in_combat-champion.lastautoattacktime >= 1.0f/champion.attackspeed_current){
                     champion.lastautoattacktime = seconds_in_combat;
-                    autoattack(champion);
+                    autoattack(champion, Team2, Team1);
                 }
                 if (champion.mana_current >= champion.def.mana_max){
                         Ability(champion, Team2, Team1);
