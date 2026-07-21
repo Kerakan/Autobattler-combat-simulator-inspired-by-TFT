@@ -1,0 +1,101 @@
+[
+    {
+        "name": "Lovers",
+        "thresholds": [2, 2],
+        "hp_modifier": [1.0, 1.0],
+        "ad_modifier": [1.0, 1.0],
+        "ap_modifier": [1.0, 1.0],
+        "lifesteal": 0.0,
+        "execute": [0, 0]
+    },
+    {
+        "name": "Bruiser",
+        "thresholds": [2, 3],
+        "hp_modifier": [1.05, 1.10],
+        "ad_modifier": [1.1, 1.2],
+        "ap_modifier": [1.0, 1.0],
+        "lifesteal": 0.0,
+        "execute": [0, 0]
+    },
+    {
+        "name": "Assassin",
+        "thresholds": [2, 2],
+        "hp_modifier": [1.0, 1.0],
+        "ad_modifier": [1.0, 1.0],
+        "ap_modifier": [1.0, 1.0],
+        "lifesteal": 20.0,
+        "execute": [0, 0]
+    },
+    {
+        "name": "Sniper",
+        "thresholds": [2, 3],
+        "hp_modifier": [1.0, 1.0],
+        "ad_modifier": [1.15, 1.25],
+        "ap_modifier": [1.0, 1.0],
+        "lifesteal": 0.0,
+        "execute": [0, 0]
+    },
+    {
+        "name": "Guardian",
+        "thresholds": [2, 3],
+        "hp_modifier": [1.15, 1.25],
+        "ad_modifier": [1.0, 1.0],
+        "ap_modifier": [1.0, 1.0],
+        "lifesteal": 0.0,
+        "execute": [0, 0]
+    },
+    {
+        "name": "Mage",
+        "thresholds": [2, 3],
+        "hp_modifier": [1.0, 1.0],
+        "ad_modifier": [1.0, 1.0],
+        "ap_modifier": [1.15, 1.25],
+        "lifesteal": 0.0,
+        "execute": [0, 0]
+    },
+    {
+        "name": "Celestials",
+        "thresholds": [2, 3, 4, 5],
+        "hp_modifier": [1.0],
+        "ad_modifier": [1.0],
+        "ap_modifier": [1.0],
+        "lifesteal": 0.0,
+        "execute": [0, 0]
+    },
+    {
+        "name": "ShadowFighters",
+        "thresholds": [3, 5],
+        "hp_modifier": [1.0, 1.0],
+        "ad_modifier": [1.0, 1.0],
+        "ap_modifier": [1.0, 1.0],
+        "lifesteal": 0.0,
+        "execute": [0, 0]
+    },
+    {
+        "name": "DarkKnights",
+        "thresholds": [3, 5],
+        "hp_modifier": [1.0, 1.0, 1.0],
+        "ad_modifier": [1.0, 1.0, 1.0],
+        "ap_modifier": [1.0, 1.0, 1.0],
+        "lifesteal": 0.0,
+        "execute": [5, 10]
+    },
+    {
+        "name": "Titan",
+        "thresholds": [1, 1],
+        "hp_modifier": [1.0, 1.0],
+        "ad_modifier": [1.0, 1.0],
+        "ap_modifier": [1.0, 1.0],
+        "lifesteal": 0.0,
+        "execute": [0, 0]
+    },
+    {
+        "name": "StarForger",
+        "thresholds": [1, 1],
+        "hp_modifier": [1.0, 1.0],
+        "ad_modifier": [1.0, 1.0],
+        "ap_modifier": [1.0, 1.0],
+        "lifesteal": 0.0,
+        "execute": [0, 0]
+    }
+]
