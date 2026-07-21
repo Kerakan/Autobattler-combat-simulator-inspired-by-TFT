@@ -2,7 +2,7 @@
 #include "raylib.h"
 #include "Grid.h"
 #include "Champ.h"
-#include "TraitStatSystem.h"
+#include "Traits.h"
 #include <cmath>
 #include "Log.h"
 #include <utility>
@@ -94,29 +94,29 @@ void DrawTraitsSkeleton(){
     DrawLine(50,500,150,500, WHITE);
     DrawText("Team 1 Traits", 100, 550, 25, RED);
 }
-void DrawTraits(int position, std::vector<ChampState> &Team, std::vector<TraitActivation*> TraitsInTeam){
+void DrawTraits(int position, std::vector<ChampState> &Team, std::vector<Trait> TraitsInTeam){
     DrawTraitsSkeleton();
     int i = 1;
-    for (TraitActivation* trait: TraitsInTeam){
-        if (trait->name != "Celestials"){
+    for (Trait& trait: TraitsInTeam){
+        if (trait.name != "Celestials"){
             if (position == 1){
-                std::string text = trait->name+ " " + std::to_string(trait->numchampsT1);
-                if (trait->numchampsT1 >= trait->treshold[1]){
+                std::string text = trait.name+ " " + std::to_string(trait.numchampsT1);
+                if (trait.numchampsT1 >= trait.treshold[1]){
                     DrawText(text.c_str(), 100, 550 + 75*i, 20, GOLD);
                     i++;
                 }
-                else if (trait->numchampsT1 >= trait->treshold[0]){
+                else if (trait.numchampsT1 >= trait.treshold[0]){
                     DrawText(text.c_str(), 100, 550 + 75*i, 20, LIGHTGRAY);
                     i++;
                 }
             }
             else if (position == 0){
-                std::string text = trait->name+ " " + std::to_string(trait->numchampsT2);
-                if (trait->numchampsT2 >= trait->treshold[1]){
+                std::string text = trait.name+ " " + std::to_string(trait.numchampsT2);
+                if (trait.numchampsT2 >= trait.treshold[1]){
                     DrawText(text.c_str(), 100, 100 + 75*i, 20, GOLD);
                     i++;
                 }
-                else if (trait->numchampsT2 >= trait->treshold[0]){
+                else if (trait.numchampsT2 >= trait.treshold[0]){
                     DrawText(text.c_str(), 100, 100 + 75*i, 20, LIGHTGRAY);
                     i++;
                 }
@@ -124,15 +124,15 @@ void DrawTraits(int position, std::vector<ChampState> &Team, std::vector<TraitAc
         }
         else{
             if (position == 1){
-                std::string text = trait->name+ " " + std::to_string(trait->numchampsT1);
-                if (trait->numchampsT1 >= trait->treshold[0]){
+                std::string text = trait.name+ " " + std::to_string(trait.numchampsT1);
+                if (trait.numchampsT1 >= trait.treshold[0]){
                     DrawText(text.c_str(), 100, 550 + 75*i, 20, SKYBLUE);
                     i++;
                 }
             }
             else if (position == 0){
-                std::string text = trait->name+ " " + std::to_string(trait->numchampsT2);
-                if (trait->numchampsT2 >= trait->treshold[1]){
+                std::string text = trait.name+ " " + std::to_string(trait.numchampsT2);
+                if (trait.numchampsT2 >= trait.treshold[1]){
                     DrawText(text.c_str(), 100, 100 + 75*i, 20, SKYBLUE);
                     i++;
                 }
