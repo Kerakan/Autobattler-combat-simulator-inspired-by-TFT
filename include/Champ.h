@@ -57,7 +57,7 @@ inline std::unordered_map<std::string, ChampDef> CHAMP_STORAGE;
 inline std::unordered_map<std::string, const ChampDef*> CHAMP_POOL;
 
 inline void LoadChampions() {
-    std::ifstream f("data/champions.json");
+    std::ifstream f("data/ChampionPool.json");
     nlohmann::json cdata = nlohmann::json::parse(f);
     for (auto& c : cdata) {
         ChampDef def;

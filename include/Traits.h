@@ -31,18 +31,18 @@ const std::unordered_map<std::string, Trait> TRAIT_TRANSFORM = {
 };
 inline std::unordered_map<Trait, TraitDef*> TRAIT_POOL;
 inline void LoadTraits() {
-    std::ifstream f("data/traits.json");
+    std::ifstream f("data/Traits.json");
     nlohmann::json data = nlohmann::json::parse(f);
     for (auto& t : data) {
-        TraitDef trait;
-        trait.name        = t["name"];
-        trait.thresholds  = t["thresholds"].get<std::vector<int>>();
-        trait.hp_modifier = t["hp_modifier"].get<std::vector<float>>();
-        trait.ad_modifier = t["ad_modifier"].get<std::vector<float>>();
-        trait.ap_modifier = t["ap_modifier"].get<std::vector<float>>();
-        trait.lifesteal   = t["lifesteal"];
-        trait.execute     = t["execute"].get<std::vector<float>>();
+        TraitDef* trait = new TraitDef();
+        trait->name        = t["name"];
+        trait->thresholds  = t["thresholds"].get<std::vector<int>>();
+        trait->hp_modifier = t["hp_modifier"].get<std::vector<float>>();
+        trait->ad_modifier = t["ad_modifier"].get<std::vector<float>>();
+        trait->ap_modifier = t["ap_modifier"].get<std::vector<float>>();
+        trait->lifesteal   = t["lifesteal"];
+        trait->execute     = t["execute"].get<std::vector<float>>();
 
-        TRAIT_POOL[TRAIT_TRANSFORM.at(trait.name)] = &trait;
+        TRAIT_POOL[TRAIT_TRANSFORM.at(trait->name)] = trait;
     }
 }
