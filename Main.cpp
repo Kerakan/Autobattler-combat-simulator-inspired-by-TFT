@@ -7,7 +7,7 @@
 #include "Draw.h"
 int main(){
 	LoadTraits();
-	LoadTraits();
+	LoadChampions();
 	std::vector<ChampState> TeamA = CreateTeam();
 	std::vector<ChampState> TeamB = CreateTeam();	
 	run_combat(TeamA, TeamB);
