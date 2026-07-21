@@ -3,7 +3,6 @@
 #include <iostream>
 #include "Champ.h"
 #include <vector>
-#include "ChampionPool.h"
 #include "Log.h"
 int askteamcapacity(){
     int team_capacity;

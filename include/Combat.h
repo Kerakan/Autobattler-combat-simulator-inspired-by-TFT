@@ -2,6 +2,7 @@
 #include <iostream>
 #include <algorithm>
 #include "TraitStatSystem.h"
+#include "Traits.h"
 #include "Team.h"
 #include <chrono>
 #include "AttacksAbilitiesDeathHandling.h"
@@ -18,12 +19,12 @@ void run_combat(std::vector<ChampState>& Team1, std::vector<ChampState>& Team2) 
     bool someone_died = false;
     float Shadow_Fighters_last = 0.0f;
     float Shadow_Fighters_interval=1.0f;
-    std::vector<TraitActivation*> TraitsInTeam1;
-    std::vector<TraitActivation*> TraitsInTeam2;
+    std::vector<TraitDef*> TraitsInTeam1;
+    std::vector<TraitDef*> TraitsInTeam2;
     //sum how many of each trait there is
     for (ChampState& champion: Team1){
         for(Trait trait: champion.def.ChampTraits){
-            TraitActivation* t = TRAIT_POOL.at(trait);
+            TraitDef* t = TRAIT_POOL.at(trait);
             if (std::find(TraitsInTeam1.begin(),TraitsInTeam1.end(),t)==TraitsInTeam1.end()){
                 TraitsInTeam1.push_back(t);
             }
@@ -33,7 +34,7 @@ void run_combat(std::vector<ChampState>& Team1, std::vector<ChampState>& Team2) 
     //Now we apply the effects
     for (ChampState& champion: Team1){
         for(Trait trait: champion.def.ChampTraits){
-            TraitActivation* t = TRAIT_POOL.at(trait);
+            TraitDef* t = TRAIT_POOL.at(trait);
             if (t->name != "Celestials" and t->name != "ShadowFighters") ApplyTraitEffects(*t,champion,1);
             else if(t->name == "Celestials") ApplyCelestialsTraitEffects(champion,1);
         }
@@ -41,7 +42,7 @@ void run_combat(std::vector<ChampState>& Team1, std::vector<ChampState>& Team2) 
     Log("Team 1 traits activated");
     for (ChampState& champion: Team2){
         for(Trait trait: champion.def.ChampTraits){
-            TraitActivation* t = TRAIT_POOL.at(trait);
+            TraitDef* t = TRAIT_POOL.at(trait);
             if (std::find(TraitsInTeam2.begin(),TraitsInTeam2.end(),t)==TraitsInTeam2.end()){
                 TraitsInTeam2.push_back(t);
             }
@@ -51,7 +52,7 @@ void run_combat(std::vector<ChampState>& Team1, std::vector<ChampState>& Team2) 
     //Now we apply the effects
     for (ChampState& champion: Team2){
         for(Trait trait: champion.def.ChampTraits){
-            TraitActivation* t = TRAIT_POOL.at(trait);
+            TraitDef* t = TRAIT_POOL.at(trait);
             if (t->name != "Celestials" and t->name != "ShadowFighters") ApplyTraitEffects(*t,champion,2);
             else if(t->name == "Celestials") ApplyCelestialsTraitEffects(champion,2);
             }
@@ -77,14 +78,14 @@ void run_combat(std::vector<ChampState>& Team1, std::vector<ChampState>& Team2) 
             //Apply ShadowFighter per second
             if(seconds_in_combat-Shadow_Fighters_last >= Shadow_Fighters_interval){
                 for (ChampState& champion: Team1){
-                    if (TRAIT_POOL.at(Trait::Shadow_Fighters)->numchampsT1 >= TRAIT_POOL.at(Trait::Shadow_Fighters)->treshold[0]){
+                    if (TRAIT_POOL.at(Trait::Shadow_Fighters)->numchampsT1 >= TRAIT_POOL.at(Trait::Shadow_Fighters)->thresholds[0]){
                         if (std::find(champion.def.ChampTraits.begin(), champion.def.ChampTraits.end(), Trait::Shadow_Fighters) != champion.def.ChampTraits.end()){
                             ApplyShadowFighterTraitEffects(champion,1);
                         }
                     }
                 }
                 for (ChampState& champion: Team2){
-                    if (TRAIT_POOL.at(Trait::Shadow_Fighters)->numchampsT2 >= TRAIT_POOL.at(Trait::Shadow_Fighters)->treshold[0]){
+                    if (TRAIT_POOL.at(Trait::Shadow_Fighters)->numchampsT2 >= TRAIT_POOL.at(Trait::Shadow_Fighters)->thresholds[0]){
                         if (std::find(champion.def.ChampTraits.begin(), champion.def.ChampTraits.end(), Trait::Shadow_Fighters) != champion.def.ChampTraits.end()){
                             ApplyShadowFighterTraitEffects(champion,2);
                         }
