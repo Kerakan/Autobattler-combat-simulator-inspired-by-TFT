@@ -25,13 +25,13 @@ void MoveCloser(ChampState &champ, ChampState &target, std::vector<ChampState> &
     for (GridPos move: possible_moves){
         if (distance(move, targetpos) < distance(champpos, targetpos)){
             bool is_occupied = false;
-            for (ChampState &champ : AllyTeam) {
-                if (champ.pos.q == move.q && champ.pos.r == move.r) {
+            for (ChampState &champion : AllyTeam) {
+                if (champion.pos.q == move.q && champion.pos.r == move.r) {
                     is_occupied = true;
                 }
             }
-            for (ChampState &champ : EnemyTeam) {
-                if (champ.pos.q == move.q && champ.pos.r == move.r) {
+            for (ChampState &champion : EnemyTeam) {
+                if (champion.pos.q == move.q && champion.pos.r == move.r) {
                     is_occupied = true;
                 }
             }

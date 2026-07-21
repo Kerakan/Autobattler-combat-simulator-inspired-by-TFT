@@ -94,29 +94,29 @@ void DrawTraitsSkeleton(){
     DrawLine(50,500,150,500, WHITE);
     DrawText("Team 1 Traits", 100, 550, 25, RED);
 }
-void DrawTraits(int position, std::vector<ChampState> &Team, std::vector<Trait> TraitsInTeam){
+void DrawTraits(int position, std::vector<ChampState> &Team, std::vector<TraitDef*> TraitsInTeam){
     DrawTraitsSkeleton();
     int i = 1;
-    for (Trait& trait: TraitsInTeam){
-        if (trait.name != "Celestials"){
+    for (TraitDef* trait: TraitsInTeam){
+        if (trait->name != "Celestials"){
             if (position == 1){
-                std::string text = trait.name+ " " + std::to_string(trait.numchampsT1);
-                if (trait.numchampsT1 >= trait.treshold[1]){
+                std::string text = trait->name+ " " + std::to_string(trait->numchampsT1);
+                if (trait->numchampsT1 >= trait->thresholds[1]){
                     DrawText(text.c_str(), 100, 550 + 75*i, 20, GOLD);
                     i++;
                 }
-                else if (trait.numchampsT1 >= trait.treshold[0]){
+                else if (trait->numchampsT1 >= trait->thresholds[0]){
                     DrawText(text.c_str(), 100, 550 + 75*i, 20, LIGHTGRAY);
                     i++;
                 }
             }
             else if (position == 0){
-                std::string text = trait.name+ " " + std::to_string(trait.numchampsT2);
-                if (trait.numchampsT2 >= trait.treshold[1]){
+                std::string text = trait->name+ " " + std::to_string(trait->numchampsT2);
+                if (trait->numchampsT2 >= trait->thresholds[1]){
                     DrawText(text.c_str(), 100, 100 + 75*i, 20, GOLD);
                     i++;
                 }
-                else if (trait.numchampsT2 >= trait.treshold[0]){
+                else if (trait->numchampsT2 >= trait->thresholds[0]){
                     DrawText(text.c_str(), 100, 100 + 75*i, 20, LIGHTGRAY);
                     i++;
                 }
@@ -124,15 +124,15 @@ void DrawTraits(int position, std::vector<ChampState> &Team, std::vector<Trait> 
         }
         else{
             if (position == 1){
-                std::string text = trait.name+ " " + std::to_string(trait.numchampsT1);
-                if (trait.numchampsT1 >= trait.treshold[0]){
+                std::string text = trait->name+ " " + std::to_string(trait->numchampsT1);
+                if (trait->numchampsT1 >= trait->thresholds[0]){
                     DrawText(text.c_str(), 100, 550 + 75*i, 20, SKYBLUE);
                     i++;
                 }
             }
             else if (position == 0){
-                std::string text = trait.name+ " " + std::to_string(trait.numchampsT2);
-                if (trait.numchampsT2 >= trait.treshold[1]){
+                std::string text = trait->name+ " " + std::to_string(trait->numchampsT2);
+                if (trait->numchampsT2 >= trait->thresholds[1]){
                     DrawText(text.c_str(), 100, 100 + 75*i, 20, SKYBLUE);
                     i++;
                 }
@@ -145,14 +145,14 @@ void DrawConsoleLog(int width, int height){
     int max_lines = 390/20;
     int height_start = height - 395;
     int width_start = (width - 600) + 5;
-    int start = 0;
+    int textsstart = 0;
     int texts = LogTxts.size();
     if (texts >= max_lines){
-        start = texts-max_lines;
+        textsstart = texts-max_lines;
     }
     DrawRectangleLines((width-600), height - 400, 600, 400, WHITE);
-    for (int i = start; i<texts; i++){
-        DrawText(LogTxts[i].c_str(), width_start, height_start + (i-start)*20, size, WHITE);
+    for (int i = textsstart; i<texts; i++){
+        DrawText(LogTxts[i].c_str(), width_start, height_start + (i-textsstart)*20, size, WHITE);
     }
 }
 void Accelerate(std::vector<ChampState>& Team1, std::vector<ChampState>& Team2){
