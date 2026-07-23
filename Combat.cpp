@@ -74,11 +74,9 @@ void run_combat(std::vector<ChampState>& Team1, std::vector<ChampState>& Team2, 
     for (ChampState& champion: Team1){
         if (champion.enemytarget == nullptr or champion.def.name == "Asura"){
             FindClosestEnemy(champion, Team1, Team2);
-        }
-        if (champion.hp_current <= 0 or champion.enemytarget->hp_current <= 0){
-            someone_died = true;
             continue;
         }
+        if (someone_died) continue;
         if (seconds_in_combat-champion.lastautoattacktime >= 1.0f/champion.attackspeed_current){
             champion.lastautoattacktime = seconds_in_combat;
             autoattack(champion, Team1, Team2);
@@ -86,16 +84,20 @@ void run_combat(std::vector<ChampState>& Team1, std::vector<ChampState>& Team2, 
         if (champion.mana_current >= champion.def.mana_max and champion.def.mana_max > 0){
                 Ability(champion, Team1, Team2);
                 champion.mana_current = 0;
-            }
+        }
+        if (champion.hp_current <= 0 or champion.enemytarget->hp_current <= 0){
+            someone_died = true;
+            continue;
+        }
     }
     //Remove the Dead if there are any
     if (someone_died){
         Team2 = RemoveDead(Team2);
         for (ChampState& champion: Team1){
-                champion.enemytarget = nullptr;
+            champion.enemytarget = nullptr;
         }
         someone_died = false;
-    } 
+    }
     //If the enemy team is empty, team 1 wins
     if (Team2.empty()) {
         std::cout << "Team 1 wins!\n";
@@ -104,11 +106,9 @@ void run_combat(std::vector<ChampState>& Team1, std::vector<ChampState>& Team2, 
     for (ChampState& champion: Team2){
         if (champion.enemytarget == nullptr or champion.def.name == "Asura"){
             FindClosestEnemy(champion, Team2, Team1);
-        }
-        if (champion.hp_current <= 0 or champion.enemytarget->hp_current <= 0){
-            someone_died = true;
             continue;
-        } 
+        }
+        if (someone_died) continue;
         if (seconds_in_combat-champion.lastautoattacktime >= 1.0f/champion.attackspeed_current){
             champion.lastautoattacktime = seconds_in_combat;
             autoattack(champion, Team2, Team1);
@@ -116,12 +116,16 @@ void run_combat(std::vector<ChampState>& Team1, std::vector<ChampState>& Team2, 
         if (champion.mana_current >= champion.def.mana_max){
                 Ability(champion, Team2, Team1);
                 champion.mana_current = 0;
-            }       
+        }
+        if (champion.hp_current <= 0 or champion.enemytarget->hp_current <= 0){
+            someone_died = true;
+            continue;
+        }       
     } 
     if (someone_died){
         Team1 = RemoveDead(Team1);
         for (ChampState& champion: Team2){
-                champion.enemytarget = nullptr;
+            champion.enemytarget = nullptr;
         }
         someone_died = false;
     }  

@@ -39,10 +39,16 @@ void MoveCloser(ChampState &champ, ChampState &target, std::vector<ChampState> &
                     is_occupied = true;
                 }
             }
-            if (is_occupied) continue;
+            if (is_occupied){
+                Log("Move is occupied");
+                continue;
+            };
             champ.pos = move;
             break;
         }
+    }
+    if (champ.pos == champpos){
+        champ.enemytarget = nullptr;
     }
 };
 void FindClosestEnemy(ChampState &Champ, std::vector<ChampState> &AllyTeam, std::vector<ChampState> &EnemyTeam){
@@ -72,16 +78,13 @@ void FindClosestEnemy(ChampState &Champ, std::vector<ChampState> &AllyTeam, std:
             Log("Champion " + Champ.def.name + " found enemy " + Champ.enemytarget->def.name);
         }
         else{
-            while(closest_distance>Champ.range){
+            while(closest_distance > Champ.range){
                 Log("Champion " + Champ.def.name + " is moving closer to enemy " + Champ.enemytarget->def.name);
                 MoveCloser(Champ, *Champ.enemytarget, AllyTeam, EnemyTeam);
-                if (Champ.enemytarget->enemytarget == &Champ){
-                    std::cout<<"Champion "<<Champ.enemytarget->def.name<<" is moving closer to enemy "<< Champ.def.name<<std::endl;
-                    MoveCloser(*Champ.enemytarget, Champ, EnemyTeam, AllyTeam);
-                }
-                closest_distance = distance(Champ.pos, Champ.enemytarget->pos);
+                if (Champ.enemytarget==nullptr) break;
+                if (!(Champ.enemytarget==nullptr)) closest_distance = distance(Champ.pos, Champ.enemytarget->pos);
             }
-            Log("Champion " + Champ.def.name + " found enemy " + Champ.enemytarget->def.name);
+            if (!(Champ.enemytarget==nullptr)) Log("Champion " + Champ.def.name + " found enemy " + Champ.enemytarget->def.name);
         }
     }   
 }
